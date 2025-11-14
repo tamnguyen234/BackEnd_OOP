@@ -1,4 +1,4 @@
-// Tắt bắt buộc login (auto login)
+// Tắt bắt buộc login (auto login để chạy test class khi chưa có database)
 
 package com.javaproject.Backend.config;
 
