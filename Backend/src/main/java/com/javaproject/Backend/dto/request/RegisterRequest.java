@@ -1,5 +1,12 @@
 package com.javaproject.Backend.dto.request;
 
-public class RegisterRequest {
+import lombok.Data;
 
+// --- RegisterRequest ---
+@Data
+public class RegisterRequest {
+    private String email;
+    private String password;
+    private String fullName;
 }
+
