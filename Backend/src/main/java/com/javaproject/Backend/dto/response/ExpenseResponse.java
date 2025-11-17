@@ -20,4 +20,14 @@ public class ExpenseResponse {
     private LocalDate expenseDate;
     private LocalDateTime createdAt;
 
+    public ExpenseResponse(Long expenseId, Long userId, Long categoryId,
+        BigDecimal amount, String description, LocalDate expenseDate, LocalDateTime createdAt){
+            this.expenseId = expenseId;
+            this.userId = userId;
+            this.categoryId = categoryId;
+            this.amount = amount;
+            this.description = description;
+            this.expenseDate = expenseDate;
+            this.createdAt = createdAt;
+    }
 }

@@ -13,4 +13,15 @@ public class BudgetResponse {
     private String period;      // MONTHLY, WEEKLY
     private LocalDate startDate;
     private LocalDate endDate;
+
+    public BudgetResponse(Long budgetId, Long userId, Long categoryId, 
+            BigDecimal amountLimit, String period, LocalDate startDate, LocalDate endDate){
+        this.budgetId = budgetId;
+        this.userId = userId;
+        this.categoryId = categoryId;
+        this.amountLimit = amountLimit;
+        this.period = period;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

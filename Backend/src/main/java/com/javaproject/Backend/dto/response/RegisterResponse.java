@@ -10,7 +10,6 @@ public class RegisterResponse {
     private String message = "User registered successfully";
 
     public RegisterResponse(){
-        
     }
 
     public RegisterResponse(Long userId, String email, String fullName) {
