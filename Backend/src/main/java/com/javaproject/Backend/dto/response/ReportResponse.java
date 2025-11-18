@@ -1,13 +1,22 @@
 package com.javaproject.Backend.dto.response;
 
-// File trả kết quả phân tích (AI/thuật toán tự viết).
-import lombok.Data;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.time.LocalDate;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ReportResponse {
+    private Long userId;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private BigDecimal totalExpense;
-    private Map<String, BigDecimal> expenseByCategory;
-    private String advice; 
 }

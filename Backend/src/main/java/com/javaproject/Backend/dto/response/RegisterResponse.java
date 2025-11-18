@@ -1,20 +1,18 @@
 package com.javaproject.Backend.dto.response;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RegisterResponse {
     private Long userId;
     private String email;
     private String fullName;
-    private String message = "User registered successfully";
-
-    public RegisterResponse(){
-    }
-
-    public RegisterResponse(Long userId, String email, String fullName) {
-        this.userId = userId;
-        this.email = email;
-        this.fullName = fullName;
-    }
 }

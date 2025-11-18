@@ -1,18 +1,19 @@
 package com.javaproject.Backend.dto.response;
 
-// DTO dùng để trả về JWT Token sau khi đăng nhập thành công
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class JwtResponse {
     private String token;
-    private String type = "Bearer";
+    private String tokenType = "Bearer";
     private Long userId;
     private String email;
-
-    public JwtResponse(String token, Long userId, String email) {
-        this.token = token;
-        this.userId = userId;
-        this.email = email;
-    }
 }

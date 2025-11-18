@@ -1,14 +1,23 @@
 package com.javaproject.Backend.dto.request;
 
-import lombok.Data;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-// DTO dùng để nhận dữ liệu Đăng nhập (Authentication)
-@Data 
-//@Data = @Getter + @Setter + @ToString + @EqualsAndHashCode + @RequiredArgsConstructor
-// java tự sinh get, set, tostring, equals, hashcode, constructor rỗng
-// Chỉ sử dụng không phải code dài
-// Nếu muốn tạo constructor có tham số thì tự tạo
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class LoginRequest {
+    @Email
+    @NotBlank
     private String email;
+
+    @NotBlank
     private String password;
 }

@@ -1,66 +1,58 @@
 package com.javaproject.Backend.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.javaproject.Backend.domain.User;
 import com.javaproject.Backend.dto.request.LoginRequest;
 import com.javaproject.Backend.dto.request.RegisterRequest;
 import com.javaproject.Backend.dto.response.JwtResponse;
 import com.javaproject.Backend.dto.response.RegisterResponse;
+import com.javaproject.Backend.exception.ResourceNotFoundException;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.AuthService;
-import com.javaproject.Backend.util.JwtTokenUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import com.javaproject.Backend.util.JwtUtils;
 
-/**
- * Service triển khai nghiệp vụ đăng ký/đăng nhập
- */
+import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder; // Mã hóa mật khẩu
-    private final JwtTokenUtil jwtTokenUtil;       // Sinh và validate JWT
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
     @Override
     public RegisterResponse register(RegisterRequest request) {
-        // Kiểm tra email đã tồn tại
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-
-        // Tạo user mới
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setFullName(request.getFullName());
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-
-        // Lưu vào DB
-        userRepository.save(user);
-
-        // Trả về DTO
-        RegisterResponse response = new RegisterResponse();
-        response.setUserId(user.getUserId());
-        response.setEmail(user.getEmail());
-        response.setFullName(user.getFullName());
-        return response;
+        // check existed
+        userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
+            throw new RuntimeException("Email already registered");
+        });
+        User user = User.builder()
+                .email(request.getEmail())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .fullName(request.getFullName())
+                .build();
+        User saved = userRepository.save(user);
+        return RegisterResponse.builder()
+                .userId(saved.getUserId())
+                .email(saved.getEmail())
+                .fullName(saved.getFullName())
+                .build();
     }
 
     @Override
-    public JwtResponse login(LoginRequest request) {
-        // Tìm user theo email
+    public JwtResponse authenticate(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Kiểm tra mật khẩu
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new RuntimeException("Invalid credentials");
         }
-
-        // Tạo JWT token
-        String token = jwtTokenUtil.generateToken(user.getEmail());
-
-        return new JwtResponse(token, user.getUserId(), user.getEmail());
+        String token = jwtUtils.generateToken(user.getEmail(), user.getUserId());
+        return JwtResponse.builder()
+                .token(token)
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .build();
     }
 }

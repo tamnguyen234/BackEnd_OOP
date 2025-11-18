@@ -1,21 +1,19 @@
 package com.javaproject.Backend.dto.response;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CategoryResponse {
     private Long categoryId;
     private Long userId;
     private String name;
-    private String type; // expense / income
-
-    public CategoryResponse() {
-    };
-
-    public CategoryResponse(Long categoryId, Long userId, String name, String type) {
-        this.categoryId = categoryId;
-        this.userId = userId;
-        this.name = name;
-        this.type = type;
-    }
+    private String type;
 }

@@ -1,4 +1,35 @@
 package com.javaproject.Backend.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.javaproject.Backend.dto.request.CategoryRequest;
+import com.javaproject.Backend.dto.response.CategoryResponse;
+import com.javaproject.Backend.service.CategoryService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/categories")
+@RequiredArgsConstructor
 public class CategoryController {
+    private final CategoryService categoryService;
+
+    @PostMapping
+    public ResponseEntity<CategoryResponse> create(@Valid @RequestBody CategoryRequest req) {
+        return ResponseEntity.ok(categoryService.createCategory(req));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CategoryResponse>> getByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(categoryService.getCategoriesByUser(userId));
+    }
 }
