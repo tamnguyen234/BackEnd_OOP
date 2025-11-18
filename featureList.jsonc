@@ -1,0 +1,91 @@
+{
+  "projectStructure": {
+    //1. AI
+    "analysis": {
+      "client": [
+        "PythonAIClient.java"
+      ],
+      "dto": [
+        "AIAdvisorService.java",
+        "TrendAnalyzer.java"
+      ]
+    },
+    //2. Bảo mật
+    "config": [
+      "SchedulerConfig.java",
+      "SecurityConfig.java",
+      "UnSecurityConfig.java",
+      "WebConfig.java"
+    ],
+    //3. Bộ điều khiển: Request và return Reponce cho client và gọi service
+    "controller": [
+      "AuthController.java", // Xác Thực: register , login , 
+      "BudgetController.java", // Ngân sách: tạo budget , getAllBudget by UserID , 
+      "CategoryController.java", // Loại: tạo category , getAllCategory by userID ,
+      "ExpenseController.java", // Chi phí: tạo Expense , getAllExpense by userID , getExpense by userID between(start,end) , 
+      "ReportController.java" // Báo cáo: 
+    ],
+    //4. Lãnh địa: Các table entiti (interface của SQL): kết nối và làm việc trực tiếp với SQL (Create Uppdate(Save) Read Delete)
+    "domain": [
+      "Budget.java", // Bảng với đầy đủ entity giống với SQL 
+      "Category.java", // Bảng với đầy đủ entity giống với SQL 
+      "Expense.java", // Bảng với đầy đủ entity giống với SQL 
+      "User.java" // Bảng với đầy đủ entity giống với SQL 
+    ],
+    /*5. Đối tượng Truyền Tải Dữ liệu: Tránh request và reponce hết các entyti trong SQL
+                                        Service gọi dưới dạng biến (biến dto) */
+    "dto": {
+      // Dữ liệu nhận vào
+      "request": [
+        "BudgetRequest.java", // Chỉ chứa các thuộc tính đưa vào 
+        "CategoryRequest.java", // Chỉ chứa các thuộc tính đưa vào 
+        "ExpenseRequest.java", // Chỉ chứa các thuộc tính đưa vào 
+        "LoginRequest.java", // Chỉ chứa các thuộc tính đưa vào 
+        "RegisterRequest.java", // Chỉ chứa các thuộc tính đưa vào 
+        "ReportRequest.java" // Chỉ chứa các thuộc tính đưa vào 
+      ],
+      // Dữ liệu trả về
+      "response": [
+        "BudgetResponse.java", // Chỉ chứa các thuộc tính trả về 
+        "CategoryResponse.java", // Chỉ chứa các thuộc tính trả về 
+        "ExpenseResponse.java", // Chỉ chứa các thuộc tính trả về 
+        "JwtResponse.java", // Chỉ chứa các thuộc tính trả về 
+        "RegisterResponse.java", // Chỉ chứa các thuộc tính trả về 
+        "ReportResponse.java" // Chỉ chứa các thuộc tính trả về 
+      ]
+    },
+    //6. Ngoại lệ (lỗi): 
+    "exception": [
+      "GlobalExceptionHandler.java",
+      "ResourceNotFoundException.java"
+    ],
+    //7. Kho lưu trữ: Chứa các truy xuất dữ liệu (Dùng JPA)
+    "repository": [
+      "BudgetRepository.java", // getAllBudget by UserID , 
+      "CategoryRepository.java", // getAllCategory by UserID , 
+      "ExpenseRepository.java", // getAllExpence by UserID , getExpense by userID between(start,end) , getExpense between(start,end) ,  
+      "UserRepository.java" // find Requets.email , 
+    ],
+    //8. Lập lịch: Tự động khởi chạy vào thời gian được thiết lập sẵn
+    "scheduler": [
+      "ReportScheduler.java"
+    ],
+    //9. Dịch vụ: Xử lí các logic : Chuyển requet(controller) -> biến DTO và sử dụng biến DTO để thực hiện các logic
+    "service": {
+      "impl": [
+        "AuthService.java", // register , xác thực login , 
+        "BudgetService.java",// createBudget , getBudgetsByUser , map (object domain -> DTO) , 
+        "CategoryService.java",// createCategory , getCategoriesByUser , map (object domain -> DTO) , 
+        "ExpenseService.java",// createExpense , getExpensesByUser , getExpensesByUserBetween ,  map (object domain -> DTO) , 
+        "ReportService.java",// Tạo Báo cáo Chi tiêu(Truy vấn Dữ liệu Chi tiêu, Tính toán Tổng chi tiêu, Tạo Phản hồi) , Báo cáo Định kỳ(Tái sử dụng Logic, Xử lý Báo cáo) , 
+        "UserService.java"// getUserById , getAllUsers , updateUser(chưa code) ,  
+      ]
+    },
+    //10. Tiện ích: hỗ trợ, độc lập, tái sử dụng
+    "util": [
+      "JwtAuthenticationFilter.java", // Check requet HTTP chứ JWT hợp lệ không: xác minh danh tính và báo cho spring securrity biết danh tính đó 
+      "JwtUtils.java" // Phương thức chung và tái sử dung: tạo token, xác thực token, trích xuất email, trích xuất userID
+      // Token: Một đoạn dữ liệu số nhỏ, được mã hóa hoặc không mã hóa, đại diện cho một thông tin hoặc một quyền hạn cụ thể.
+    ]
+  }
+}
