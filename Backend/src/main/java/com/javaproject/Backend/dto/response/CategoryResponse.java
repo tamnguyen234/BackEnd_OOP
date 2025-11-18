@@ -9,7 +9,10 @@ public class CategoryResponse {
     private String name;
     private String type; // expense / income
 
-    public CategoryResponse(Long categoryId, Long userId, String name, String type){
+    public CategoryResponse() {
+    };
+
+    public CategoryResponse(Long categoryId, Long userId, String name, String type) {
         this.categoryId = categoryId;
         this.userId = userId;
         this.name = name;
