@@ -25,7 +25,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    @Override
+    // ====== Tạo Khoản Chi Mới =====
+    @Override //Triển khai phương thức từ interface ExpenseService
     public ExpenseResponse createExpense(ExpenseRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -44,19 +45,19 @@ public class ExpenseServiceImpl implements ExpenseService {
         Expense saved = expenseRepository.save(e);
         return map(saved);
     }
-
+    // ==== Truy Vấn Tất Cả Chi Tiêu của Người Dùng =====
     @Override
     public List<ExpenseResponse> getExpensesByUser(Long userId) {
         return expenseRepository.findByUserUserId(userId).stream().map(this::map).collect(Collectors.toList());
     }
-
+    // ==== Truy Vấn Chi Tiêu Theo Khoảng Thời Gian ======
     @Override
     public List<ExpenseResponse> getExpensesByUserBetween(Long userId, java.time.LocalDate start,
             java.time.LocalDate end) {
         return expenseRepository.findByUserUserIdAndExpenseDateBetween(userId, start, end)
                 .stream().map(this::map).collect(Collectors.toList());
     }
-
+    // ==== map hỗ trợ chuyển đổi =====
     private ExpenseResponse map(Expense e) {
         return ExpenseResponse.builder()
                 .expenseId(e.getExpenseId())

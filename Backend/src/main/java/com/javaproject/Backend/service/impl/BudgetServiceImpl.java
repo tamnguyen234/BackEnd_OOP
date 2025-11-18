@@ -25,7 +25,8 @@ public class BudgetServiceImpl implements BudgetService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    @Override
+    // ==== Tạo một ngân sách mới (Budget) ====
+    @Override //Triển khai phương thức từ interface BudgetService
     public BudgetResponse createBudget(BudgetRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -39,15 +40,18 @@ public class BudgetServiceImpl implements BudgetService {
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .build();
+        // Lưu đối tượng vào database
         Budget saved = budgetRepository.save(b);
+        
         return map(saved);
     }
-
-    @Override
+    // ==== Truy xuất danh sách Ngân sách theo userId =====
+    @Override //Triển khai phương thức từ interface BudgetService
     public List<BudgetResponse> getBudgetsByUser(Long userId) {
-        return budgetRepository.findByUserUserId(userId).stream().map(this::map).collect(Collectors.toList());
+        return budgetRepository.findByUserUserId(userId).stream()
+                    .map(this::map).collect(Collectors.toList());
     }
-
+    // hàm map hỗ trợ: chuyển đổi đối tượng budget đã lưu thành BudgetResponse
     private BudgetResponse map(Budget b) {
         return BudgetResponse.builder()
                 .budgetId(b.getBudgetId())

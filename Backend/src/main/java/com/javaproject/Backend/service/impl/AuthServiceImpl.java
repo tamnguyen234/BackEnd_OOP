@@ -21,7 +21,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-
+    // ==== Đăng kí tài khoản =====
     @Override
     public RegisterResponse register(RegisterRequest request) {
         // check existed
@@ -40,11 +40,12 @@ public class AuthServiceImpl implements AuthService {
                 .fullName(saved.getFullName())
                 .build();
     }
-
+    // ===== Đăng nhập =====
     @Override
     public JwtResponse authenticate(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        // so sánh mật khẩu nhập vào đã mã hóa với pass trong dữ liệu
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new RuntimeException("Invalid credentials");
         }

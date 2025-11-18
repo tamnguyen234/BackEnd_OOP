@@ -20,15 +20,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-
+    // ===== Endpoint đăng ký user =====
     @PostMapping("/register")
+    // @RequestBody: lấy dữ liệu JSON từ body request
+    // @Valid: tự động validate dữ liệu theo annotation trong RegisterRequest
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest req) {
         return ResponseEntity.ok(authService.register(req));
+        // Gọi service register và trả về ResponseEntity chứa RegisterResponse
     }
-
+    // ===== Endpoint đăng nhập user =====
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest req) {
         JwtResponse token = authService.authenticate(req);
+        // Gọi service xác thực và trả token JWT
         return ResponseEntity.ok(token);
     }
 }

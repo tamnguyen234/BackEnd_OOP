@@ -23,24 +23,32 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/expenses")
 @RequiredArgsConstructor
+// Tự động sinh constructor cho các field final (ở đây là expenseService)
 public class ExpenseController {
     private final ExpenseService expenseService;
-
+    // ===== Endpoint tạo Expense mới =====
+    // POST
     @PostMapping
     public ResponseEntity<ExpenseResponse> create(@Valid @RequestBody ExpenseRequest req) {
         return ResponseEntity.ok(expenseService.createExpense(req));
     }
-
+    // ===== Endpoint lấy danh sách Expense theo user =====
+    // GET 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ExpenseResponse>> getByUser(@PathVariable Long userId) {
+        // @PathVariable: lấy giá trị userId từ URL
         return ResponseEntity.ok(expenseService.getExpensesByUser(userId));
     }
-
+     // ===== Endpoint lấy danh sách Expense theo user trong khoảng thời gian =====
     @GetMapping("/user/{userId}/between")
     public ResponseEntity<List<ExpenseResponse>> getByUserBetween(
             @PathVariable Long userId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            // @DateTimeFormat: chuyển dạng date string sang LocalDate theo ISO 
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         return ResponseEntity.ok(expenseService.getExpensesByUserBetween(userId, start, end));
     }
 }
+// ResponseEntity là một class trong Spring Framework 
+// (thuộc package org.springframework.http)
+//  dùng để đóng gói HTTP response trả về từ controller.

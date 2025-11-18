@@ -21,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-
-    @Override
+    // ==== Tạo category mới =====
+    @Override //Triển khai phương thức từ interface CategoryService
     public CategoryResponse createCategory(CategoryRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -34,12 +34,12 @@ public class CategoryServiceImpl implements CategoryService {
         Category saved = categoryRepository.save(c);
         return map(saved);
     }
-
+    // ==== Truy xuất danh sách Category theo userId =====
     @Override
     public List<CategoryResponse> getCategoriesByUser(Long userId) {
         return categoryRepository.findByUserUserId(userId).stream().map(this::map).collect(Collectors.toList());
     }
-
+    // ==== phương thức hỗ trợ chuyển đổi
     private CategoryResponse map(Category c) {
         return CategoryResponse.builder()
                 .categoryId(c.getCategoryId())

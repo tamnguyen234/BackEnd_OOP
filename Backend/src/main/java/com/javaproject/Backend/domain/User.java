@@ -23,8 +23,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class User {
-    @Id
+    @Id // đánh dấu primarykey
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // Tự động sinh giá trị primary key (ID) cho entity khi lưu vào database.
     private Long userId;
 
     @Column(nullable = false, unique = true, length = 255)
@@ -40,6 +41,7 @@ public class User {
     private LocalDateTime createdAt;
 
     @PrePersist
+    // Đánh dấu createdAT sẽ được gán tự động
     public void prePersist() {
         if (createdAt == null)
             createdAt = LocalDateTime.now();

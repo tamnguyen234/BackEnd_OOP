@@ -22,12 +22,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
-
+    // ==== Endpoint tạo Category ====
     @PostMapping
     public ResponseEntity<CategoryResponse> create(@Valid @RequestBody CategoryRequest req) {
         return ResponseEntity.ok(categoryService.createCategory(req));
     }
-
+    // ==== Endpoint truy xuất Category theo user ====
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CategoryResponse>> getByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(categoryService.getCategoriesByUser(userId));

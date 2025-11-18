@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;
-
+    // ==== Endpoint tạo report ====
     @PostMapping("/generate")
     public ResponseEntity<ReportResponse> generate(@Valid @RequestBody ReportRequest req) {
         return ResponseEntity.ok(reportService.generateReport(req));

@@ -7,9 +7,10 @@ import com.javaproject.Backend.dto.request.ExpenseRequest;
 import com.javaproject.Backend.dto.response.ExpenseResponse;
 
 public interface ExpenseService {
+    // ====== Tạo Khoản Chi Mới =====
     ExpenseResponse createExpense(ExpenseRequest request);
-
+    // ==== Truy Vấn Tất Cả Chi Tiêu của Người Dùng =====
     List<ExpenseResponse> getExpensesByUser(Long userId);
-
+    // ==== Truy Vấn Chi Tiêu Theo Khoảng Thời Gian ======
     List<ExpenseResponse> getExpensesByUserBetween(Long userId, LocalDate start, LocalDate end);
 }

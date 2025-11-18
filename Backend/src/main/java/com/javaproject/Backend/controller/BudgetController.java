@@ -22,12 +22,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BudgetController {
     private final BudgetService budgetService;
-
+    // ==== Endpoint tạo ngân sách ====
     @PostMapping
     public ResponseEntity<BudgetResponse> create(@Valid @RequestBody BudgetRequest req) {
         return ResponseEntity.ok(budgetService.createBudget(req));
     }
-
+    // ==== Endpoint truy xuất ngân sách
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<BudgetResponse>> getByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(budgetService.getBudgetsByUser(userId));
