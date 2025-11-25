@@ -27,9 +27,15 @@ public class BudgetController {
     public ResponseEntity<BudgetResponse> create(@Valid @RequestBody BudgetRequest req) {
         return ResponseEntity.ok(budgetService.createBudget(req));
     }
-    // ==== Endpoint truy xuất ngân sách
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<BudgetResponse>> getByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(budgetService.getBudgetsByUser(userId));
+    // // ==== Endpoint truy xuất ngân sách
+    // @GetMapping("/user/{userId}")
+    // public ResponseEntity<List<BudgetResponse>> getByUser(@PathVariable Long userId) {
+    //     return ResponseEntity.ok(budgetService.getBudgetsByUser(userId));
+    // }
+    // ==== Endpoint truy xuất Budget của người dùng đang đăng nhập (SỬA ĐỔI) ====
+    // Endpoint mới: GET /api/budgets (Lấy ID từ Token)
+    @GetMapping
+    public ResponseEntity<List<BudgetResponse>> getMyBudgets() {
+        return ResponseEntity.ok(budgetService.getMyBudgets());
     }
 }

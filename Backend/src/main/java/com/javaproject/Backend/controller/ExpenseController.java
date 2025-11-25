@@ -34,19 +34,34 @@ public class ExpenseController {
     }
     // ===== Endpoint lấy danh sách Expense theo user =====
     // GET 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ExpenseResponse>> getByUser(@PathVariable Long userId) {
-        // @PathVariable: lấy giá trị userId từ URL
-        return ResponseEntity.ok(expenseService.getExpensesByUser(userId));
+    // @GetMapping("/user/{userId}")
+    // public ResponseEntity<List<ExpenseResponse>> getByUser(@PathVariable Long userId) {
+    //     // @PathVariable: lấy giá trị userId từ URL
+    //     return ResponseEntity.ok(expenseService.getExpensesByUser(userId));
+    // }
+    // ==== Endpoint truy xuất Expense của người dùng đang đăng nhập (SỬA ĐỔI) ====
+    // Endpoint mới: GET /api/expenses (Lấy ID từ Token)
+    @GetMapping
+    public ResponseEntity<List<ExpenseResponse>> getMyExpenses() {
+        return ResponseEntity.ok(expenseService.getMyExpenses());
     }
      // ===== Endpoint lấy danh sách Expense theo user trong khoảng thời gian =====
-    @GetMapping("/user/{userId}/between")
-    public ResponseEntity<List<ExpenseResponse>> getByUserBetween(
-            @PathVariable Long userId,
+    // @GetMapping("/user/{userId}/between")
+    // public ResponseEntity<List<ExpenseResponse>> getByUserBetween(
+    //         @PathVariable Long userId,
+    //         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+    //         // @DateTimeFormat: chuyển dạng date string sang LocalDate theo ISO 
+    //         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+    //     return ResponseEntity.ok(expenseService.getExpensesByUserBetween(userId, start, end));
+    // }
+    // Endpoint mới: GET /api/expenses/between?start=...&end=...
+    @GetMapping("/between")
+    public ResponseEntity<List<ExpenseResponse>> getMyExpensesBetween(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-            // @DateTimeFormat: chuyển dạng date string sang LocalDate theo ISO 
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
-        return ResponseEntity.ok(expenseService.getExpensesByUserBetween(userId, start, end));
+        
+        // Gọi Service mới (không cần truyền userId)
+        return ResponseEntity.ok(expenseService.getMyExpensesBetween(start, end));
     }
 }
 // ResponseEntity là một class trong Spring Framework 

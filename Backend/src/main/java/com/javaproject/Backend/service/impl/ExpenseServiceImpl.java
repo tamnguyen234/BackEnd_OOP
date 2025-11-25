@@ -1,8 +1,12 @@
 package com.javaproject.Backend.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.javaproject.Backend.domain.Category;
@@ -15,6 +19,7 @@ import com.javaproject.Backend.repository.CategoryRepository;
 import com.javaproject.Backend.repository.ExpenseRepository;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.ExpenseService;
+import com.javaproject.Backend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +29,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final UserService userService;
 
     // ====== Tạo Khoản Chi Mới =====
     @Override //Triển khai phương thức từ interface ExpenseService
@@ -45,15 +51,49 @@ public class ExpenseServiceImpl implements ExpenseService {
         Expense saved = expenseRepository.save(e);
         return map(saved);
     }
+    // ==== Logic truy cập dữ liệu cá nhân cho Expense ====
+    @Override
+    public List<ExpenseResponse> getMyExpenses() {
+        // 1. Lấy email từ Security Context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName(); 
+        
+        // 2. Tìm User Entity để lấy userId
+        User user = userService.findByEmail(userEmail) 
+                      .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
+        
+        Long currentUserId = user.getUserId();
+        
+        // 3. Gọi phương thức truy vấn
+        return getExpensesByUser(currentUserId);
+    }
     // ==== Truy Vấn Tất Cả Chi Tiêu của Người Dùng =====
     @Override
     public List<ExpenseResponse> getExpensesByUser(Long userId) {
         return expenseRepository.findByUserUserId(userId).stream().map(this::map).collect(Collectors.toList());
     }
-    // ==== Truy Vấn Chi Tiêu Theo Khoảng Thời Gian ======
+
+
+    // ==== Logic truy cập dữ liệu cá nhân theo khoảng thời gian ====
     @Override
-    public List<ExpenseResponse> getExpensesByUserBetween(Long userId, java.time.LocalDate start,
-            java.time.LocalDate end) {
+    public List<ExpenseResponse> getMyExpensesBetween(LocalDate start, LocalDate end) {
+        // 1. Lấy email từ Security Context
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        
+        // 2. Tìm User Entity để lấy userId
+        User user = userService.findByEmail(userEmail) 
+                      .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
+        
+        Long currentUserId = user.getUserId();
+        
+        // 3. Gọi phương thức truy vấn cũ (giờ đã an toàn vì userId được xác thực)
+        return getExpensesByUserBetween(currentUserId, start, end);
+    }
+    
+    // Phương thức truy vấn chung (triển khai dựa trên Repository)
+    @Override
+    public List<ExpenseResponse> getExpensesByUserBetween(Long userId, LocalDate start, LocalDate end) {
+        // Phương thức này CẦN được triển khai trong ExpenseRepository
         return expenseRepository.findByUserUserIdAndExpenseDateBetween(userId, start, end)
                 .stream().map(this::map).collect(Collectors.toList());
     }

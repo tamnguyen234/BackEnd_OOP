@@ -28,8 +28,17 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.createCategory(req));
     }
     // ==== Endpoint truy xuất Category theo user ====
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CategoryResponse>> getByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(categoryService.getCategoriesByUser(userId));
+    // @GetMapping("/user/{userId}")
+    // public ResponseEntity<List<CategoryResponse>> getByUser(@PathVariable Long userId) {
+    //     return ResponseEntity.ok(categoryService.getCategoriesByUser(userId));
+    // }
+    // --- 2. Endpoint truy xuất Category theo người dùng đã đăng nhập ---
+    // SỬA ĐỔI: Loại bỏ @PathVariable Long userId
+    // Endpoint mới: GET /api/categories (Hoặc GET /api/categories/me)
+    @GetMapping 
+    public ResponseEntity<List<CategoryResponse>> getMyCategories() {
+        // GỌI PHƯƠNG THỨC MỚI: Phương thức này sẽ lấy ID từ Security Context
+        // và trả về Categories chỉ thuộc về người dùng đó.
+        return ResponseEntity.ok(categoryService.getMyCategories());
     }
 }

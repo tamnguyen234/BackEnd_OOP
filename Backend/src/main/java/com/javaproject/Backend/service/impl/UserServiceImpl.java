@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +54,11 @@ public class UserServiceImpl implements UserService {
     public RegisterResponse updateUser(Long userId, RegisterResponse request) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+    }
+    public Optional<User> findByEmail(String userEmail) {
+        // TODO Auto-generated method stub
+        // throw new UnsupportedOperationException("Unimplemented method 'findByEmail'");
+        return userRepository.findByEmail(userEmail);
     }
 }
 

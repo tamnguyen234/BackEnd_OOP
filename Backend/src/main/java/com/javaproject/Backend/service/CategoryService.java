@@ -10,4 +10,5 @@ public interface CategoryService {
     CategoryResponse createCategory(CategoryRequest request);
     // ==== Truy xuất danh sách Category theo userId =====
     List<CategoryResponse> getCategoriesByUser(Long userId);
+    List<CategoryResponse> getMyCategories();
 }

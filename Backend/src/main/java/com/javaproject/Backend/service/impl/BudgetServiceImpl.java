@@ -3,6 +3,9 @@ package com.javaproject.Backend.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.javaproject.Backend.domain.Budget;
@@ -15,6 +18,7 @@ import com.javaproject.Backend.repository.BudgetRepository;
 import com.javaproject.Backend.repository.CategoryRepository;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.BudgetService;
+import com.javaproject.Backend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +28,7 @@ public class BudgetServiceImpl implements BudgetService {
     private final BudgetRepository budgetRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final UserService userService;
 
     // ==== Tạo một ngân sách mới (Budget) ====
     @Override //Triển khai phương thức từ interface BudgetService
@@ -50,6 +55,22 @@ public class BudgetServiceImpl implements BudgetService {
     public List<BudgetResponse> getBudgetsByUser(Long userId) {
         return budgetRepository.findByUserUserId(userId).stream()
                     .map(this::map).collect(Collectors.toList());
+    }
+// ==== Logic truy cập dữ liệu cá nhân cho Budget ====
+    @Override
+    public List<BudgetResponse> getMyBudgets() {
+        // 1. Lấy email từ Security Context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName(); 
+        
+        // 2. Tìm User Entity để lấy userId
+        User user = userService.findByEmail(userEmail) 
+                      .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
+        
+        Long currentUserId = user.getUserId();
+        
+        // 3. Gọi phương thức truy vấn
+        return getBudgetsByUser(currentUserId);
     }
     // hàm map hỗ trợ: chuyển đổi đối tượng budget đã lưu thành BudgetResponse
     private BudgetResponse map(Budget b) {
