@@ -37,4 +37,6 @@ public interface UserService {
      */
     RegisterResponse updateUser(Long userId, RegisterResponse request);
     Optional<User> findByEmail(String email);
+    Long getCurrentUserId();
+
 }

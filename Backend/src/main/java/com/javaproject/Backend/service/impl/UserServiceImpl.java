@@ -5,6 +5,9 @@ import com.javaproject.Backend.dto.response.RegisterResponse;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,10 +58,23 @@ public class UserServiceImpl implements UserService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
     }
+    @Override
     public Optional<User> findByEmail(String userEmail) {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'findByEmail'");
         return userRepository.findByEmail(userEmail);
+    }
+
+    // ✅ TRIỂN KHAI PHƯƠNG THỨC GỘP LOGIC
+    @Override
+    public Long getCurrentUserId() {
+        // 1. Lấy email từ Security Context
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        
+        // 2. Tìm User Entity từ email
+        User user = findByEmail(userEmail)
+                      .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
+        
+        // 3. Trả về userId
+        return user.getUserId();
     }
 }
 

@@ -20,9 +20,9 @@
     //3. Bộ điều khiển: Request và return Reponce cho client và gọi service
     "controller": [
       "AuthController.java", // Xác Thực: register , login , 
-      "BudgetController.java", // Ngân sách: tạo budget , getAllBudget by UserID , 
-      "CategoryController.java", // Loại: tạo category , getAllCategory by userID ,
-      "ExpenseController.java", // Chi phí: tạo Expense , getAllExpense by userID , getExpense by userID between(start,end) , 
+      "BudgetController.java", // Ngân sách: tạo budget , getMyBudgets , getAllBudget by UserID (admin) , 
+      "CategoryController.java", // Loại: tạo category , getMyCategories , getAllCategory by userID (admin) ,
+      "ExpenseController.java", // Chi phí: tạo Expense ,getMyExpenses,  getMyExpensesBetween ,admin: getAllExpense by userID , getExpense by userID between(start,end) , 
       "ReportController.java" // Báo cáo: 
     ],
     //4. Lãnh địa: Các table entiti (interface của SQL): kết nối và làm việc trực tiếp với SQL (Create Uppdate(Save) Read Delete)
@@ -74,11 +74,11 @@
     "service": {
       "impl": [
         "AuthService.java", // register , xác thực login , 
-        "BudgetService.java",// createBudget , getBudgetsByUser , map (object domain -> DTO) , 
-        "CategoryService.java",// createCategory , getCategoriesByUser , map (object domain -> DTO) , 
-        "ExpenseService.java",// createExpense , getExpensesByUser , getExpensesByUserBetween ,  map (object domain -> DTO) , 
+        "BudgetService.java",// createBudget , getBudgetsByUser , getMyBudgets , map (object domain -> DTO) , 
+        "CategoryService.java",// createCategory , getCategoriesByUser , getMyCategories,  map (object domain -> DTO) , 
+        "ExpenseService.java",// createExpense , getExpensesByUser , getExpensesByUserBetween , getMyExpenses, getMyExpensesBetween ,  map (object domain -> DTO) , 
         "ReportService.java",// Tạo Báo cáo Chi tiêu(Truy vấn Dữ liệu Chi tiêu, Tính toán Tổng chi tiêu, Tạo Phản hồi) , Báo cáo Định kỳ(Tái sử dụng Logic, Xử lý Báo cáo) , 
-        "UserService.java"// getUserById , getAllUsers , updateUser(chưa code) ,  
+        "UserService.java"// getUserById , getAllUsers , updateUser(chưa code) ,  getCurrentUserId, findByEmail
       ]
     },
     //10. Tiện ích: hỗ trợ, độc lập, tái sử dụng

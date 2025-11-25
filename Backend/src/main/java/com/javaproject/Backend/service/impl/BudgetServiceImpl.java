@@ -3,9 +3,6 @@ package com.javaproject.Backend.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.javaproject.Backend.domain.Budget;
@@ -58,16 +55,8 @@ public class BudgetServiceImpl implements BudgetService {
     }
 // ==== Logic truy cập dữ liệu cá nhân cho Budget ====
     @Override
-    public List<BudgetResponse> getMyBudgets() {
-        // 1. Lấy email từ Security Context
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName(); 
-        
-        // 2. Tìm User Entity để lấy userId
-        User user = userService.findByEmail(userEmail) 
-                      .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
-        
-        Long currentUserId = user.getUserId();
+    public List<BudgetResponse> getMyBudgets() {     
+        Long currentUserId = userService.getCurrentUserId();
         
         // 3. Gọi phương thức truy vấn
         return getBudgetsByUser(currentUserId);

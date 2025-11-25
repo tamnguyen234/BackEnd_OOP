@@ -4,9 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.javaproject.Backend.domain.Category;
@@ -53,16 +50,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
     // ==== Logic truy cập dữ liệu cá nhân cho Expense ====
     @Override
-    public List<ExpenseResponse> getMyExpenses() {
-        // 1. Lấy email từ Security Context
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName(); 
-        
-        // 2. Tìm User Entity để lấy userId
-        User user = userService.findByEmail(userEmail) 
-                      .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
-        
-        Long currentUserId = user.getUserId();
+    public List<ExpenseResponse> getMyExpenses() {  
+        Long currentUserId = userService.getCurrentUserId();
         
         // 3. Gọi phương thức truy vấn
         return getExpensesByUser(currentUserId);
@@ -77,14 +66,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     // ==== Logic truy cập dữ liệu cá nhân theo khoảng thời gian ====
     @Override
     public List<ExpenseResponse> getMyExpensesBetween(LocalDate start, LocalDate end) {
-        // 1. Lấy email từ Security Context
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        
-        // 2. Tìm User Entity để lấy userId
-        User user = userService.findByEmail(userEmail) 
-                      .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
-        
-        Long currentUserId = user.getUserId();
+        Long currentUserId = userService.getCurrentUserId();
         
         // 3. Gọi phương thức truy vấn cũ (giờ đã an toàn vì userId được xác thực)
         return getExpensesByUserBetween(currentUserId, start, end);

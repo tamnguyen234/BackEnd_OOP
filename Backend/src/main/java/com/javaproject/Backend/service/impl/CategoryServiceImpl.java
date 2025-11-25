@@ -3,9 +3,6 @@ package com.javaproject.Backend.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.javaproject.Backend.domain.Category;
@@ -44,18 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     // ⬇️⬇️⬇️ PHẦN BỔ SUNG LOGIC BẢO MẬT (Cách 1) ⬇️⬇️⬇️
     // ==== Truy xuất danh sách Category của người dùng đã đăng nhập =====
     public List<CategoryResponse> getMyCategories() {
-        // 1. Lấy đối tượng Authentication (thông tin người dùng) từ Security Context Holder
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 2. Lấy Principal (thường là email/username) từ Authentication Object
-        // Đây chính là email bạn đã đặt trong JwtAuthenticationFilter
-        String userEmail = authentication.getName(); 
-        
-        // 3. Tìm User Entity từ email
-        User user = userService.findByEmail(userEmail)
-                      .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
-        
-        Long currentUserId = user.getUserId();
+        Long currentUserId = userService.getCurrentUserId();
         
         // 4. Gọi phương thức truy vấn bằng userId đã được xác thực
         return getCategoriesByUser(currentUserId);
