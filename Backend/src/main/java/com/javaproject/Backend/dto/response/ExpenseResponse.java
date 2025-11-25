@@ -16,7 +16,7 @@ import lombok.Setter;
 @Builder
 public class ExpenseResponse {
     private Long expenseId;
-    private Long userId;
+    // private Long userId;
     private Long categoryId;
     private BigDecimal amount;
     private String description;

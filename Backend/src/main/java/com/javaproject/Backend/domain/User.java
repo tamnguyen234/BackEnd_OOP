@@ -2,18 +2,13 @@ package com.javaproject.Backend.domain;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.Set;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -25,19 +20,20 @@ import lombok.Setter;
 public class User {
     @Id // đánh dấu primarykey
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     // Tự động sinh giá trị primary key (ID) cho entity khi lưu vào database.
     private Long userId;
 
-    @Column(nullable = false, unique = true, length = 255)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "password_hash", nullable = false, length = 100)
     private String passwordHash;
 
-    @Column(length = 100)
+    @Column(name = "full_name", length = 100)
     private String fullName;
 
-    @Column(nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -46,4 +42,15 @@ public class User {
         if (createdAt == null)
             createdAt = LocalDateTime.now();
     }
+    // Quan hệ OneToMany với Category: ON DELETE CASCADE
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Category> categories;
+
+    // Quan hệ OneToMany với Expense: ON DELETE CASCADE
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Expense> expenses;
+
+    // Quan hệ OneToMany với Budget: ON DELETE CASCADE
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Budget> budgets;
 }

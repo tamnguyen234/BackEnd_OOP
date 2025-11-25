@@ -31,26 +31,29 @@ import lombok.Setter;
 public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "expense_id")
     private Long expenseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // Mối quan hệ ManyToOne với Category (category_id): ON DELETE SET NULL
+    // Thuộc tính này có thể NULL trong DB, nên object Category có thể là null
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id") // Mặc định là nullable=true nếu không có nullable=false
     private Category category;
 
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(name = "amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal amount;
 
-    @Lob
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
+    @Column(name = "expense_date", nullable = false)
     private LocalDate expenseDate;
 
-    @Column(nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @PrePersist

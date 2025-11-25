@@ -37,6 +37,7 @@
     "dto": {
       // Dữ liệu nhận vào
       "request": [
+        "update", // BudgetUpdateRequest, ExpenseUpdateRequest, CategoryUpdateRequest 
         "BudgetRequest.java", // Chỉ chứa các thuộc tính đưa vào 
         "CategoryRequest.java", // Chỉ chứa các thuộc tính đưa vào 
         "ExpenseRequest.java", // Chỉ chứa các thuộc tính đưa vào 
@@ -61,9 +62,9 @@
     ],
     //7. Kho lưu trữ: Chứa các truy xuất dữ liệu (Dùng JPA)
     "repository": [
-      "BudgetRepository.java", // getAllBudget by UserID , 
-      "CategoryRepository.java", // getAllCategory by UserID , 
-      "ExpenseRepository.java", // getAllExpence by UserID , getExpense by userID between(start,end) , getExpense between(start,end) ,  
+      "BudgetRepository.java", // getAllBudget by UserID , findByBudgetIdAndUserUserId
+      "CategoryRepository.java", // getAllCategory by UserID , findByCategoryIdAndUserUserId
+      "ExpenseRepository.java", // getAllExpence by UserID , getExpense by userID between(start,end) , getExpense between(start,end) ,   findByExpenseIdAndUserUserId
       "UserRepository.java" // find Requets.email , 
     ],
     //8. Lập lịch: Tự động khởi chạy vào thời gian được thiết lập sẵn

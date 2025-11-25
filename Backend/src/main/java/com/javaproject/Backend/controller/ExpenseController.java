@@ -5,14 +5,18 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.javaproject.Backend.dto.request.ExpenseRequest;
+import com.javaproject.Backend.dto.request.update.ExpenseUpdateRequest;
 import com.javaproject.Backend.dto.response.ExpenseResponse;
 import com.javaproject.Backend.service.ExpenseService;
 
@@ -27,7 +31,7 @@ public class ExpenseController {
     private final ExpenseService expenseService;
     // ===== Endpoint tạo Expense mới =====
     // POST
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ExpenseResponse> create(@Valid @RequestBody ExpenseRequest req) {
         return ResponseEntity.ok(expenseService.createExpense(req));
     }
@@ -40,7 +44,7 @@ public class ExpenseController {
     // }
     // ==== Endpoint truy xuất Expense của người dùng đang đăng nhập (SỬA ĐỔI) ====
     // Endpoint mới: GET /api/expenses (Lấy ID từ Token)
-    @GetMapping
+    @GetMapping("/my")
     public ResponseEntity<List<ExpenseResponse>> getMyExpenses() {
         return ResponseEntity.ok(expenseService.getMyExpenses());
     }
@@ -61,6 +65,22 @@ public class ExpenseController {
         
         // Gọi Service mới (không cần truyền userId)
         return ResponseEntity.ok(expenseService.getMyExpensesBetween(start, end));
+    }
+    /** CẬP NHẬT: PUT /api/expenses/{id} **/
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ExpenseResponse> updateExpense(@PathVariable Long id, 
+                                                       @RequestBody ExpenseUpdateRequest request) {
+        
+        ExpenseResponse updatedExpense = expenseService.updateExpense(id, request);
+        return ResponseEntity.ok(updatedExpense);
+    }
+
+    /** XÓA: DELETE /api/expenses/{id} **/
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
+        
+        expenseService.deleteExpense(id);
+        return ResponseEntity.noContent().build(); 
     }
 }
 // ResponseEntity là một class trong Spring Framework 
