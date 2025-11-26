@@ -17,7 +17,6 @@ import com.javaproject.Backend.dto.request.update.CategoryUpdateRequest;
 import com.javaproject.Backend.dto.response.CategoryResponse;
 import com.javaproject.Backend.service.CategoryService;
 
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -26,15 +25,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
+
     // ==== Endpoint tạo Category ====
     @PostMapping("/create")
     public ResponseEntity<CategoryResponse> create(@Valid @RequestBody CategoryRequest req) {
         return ResponseEntity.ok(categoryService.createCategory(req));
     }
+
     // ==== Endpoint truy xuất Category theo user ====
     // @GetMapping("/user/{userId}")
-    // public ResponseEntity<List<CategoryResponse>> getByUser(@PathVariable Long userId) {
-    //     return ResponseEntity.ok(categoryService.getCategoriesByUser(userId));
+    // public ResponseEntity<List<CategoryResponse>> getByUser(@PathVariable Long
+    // userId) {
+    // return ResponseEntity.ok(categoryService.getCategoriesByUser(userId));
     // }
     // --- 2. Endpoint truy xuất Category theo người dùng đã đăng nhập ---
     // SỬA ĐỔI: Loại bỏ @PathVariable Long userId
@@ -45,12 +47,13 @@ public class CategoryController {
         // và trả về Categories chỉ thuộc về người dùng đó.
         return ResponseEntity.ok(categoryService.getMyCategories());
     }
+
     /** CẬP NHẬT: PUT /api/categories/{id} **/
     @PutMapping("/update/{id}")
     // Hoặc dùng @PatchMapping nếu bạn chỉ cập nhật một phần
-    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("id") Long id, 
-                                                         @Valid @RequestBody CategoryUpdateRequest categoryUpdateRequest) {
-        
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("id") Long id,
+            @Valid @RequestBody CategoryUpdateRequest categoryUpdateRequest) {
+
         CategoryResponse updatedCategory = categoryService.updateCategory(id, categoryUpdateRequest);
         return ResponseEntity.ok(updatedCategory); // Trả về 200 OK
     }
@@ -58,9 +61,9 @@ public class CategoryController {
     /** XÓA: DELETE /api/categories/{id} **/
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable("id") Long id) {
-        
+
         categoryService.deleteCategory(id);
         // Trả về 204 No Content, đây là mã chuẩn cho DELETE thành công
-        return ResponseEntity.noContent().build(); 
+        return ResponseEntity.noContent().build();
     }
 }

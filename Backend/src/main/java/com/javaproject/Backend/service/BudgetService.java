@@ -9,11 +9,13 @@ import com.javaproject.Backend.dto.response.BudgetResponse;
 public interface BudgetService {
     // ==== Tạo một ngân sách mới (Budget) ====
     BudgetResponse createBudget(BudgetRequest request);
+
     // ==== Truy xuất danh sách Ngân sách theo userId =====
     List<BudgetResponse> getBudgetsByUser(Long userId);
 
     List<BudgetResponse> getMyBudgets();
 
     BudgetResponse updateBudget(Long budgetId, BudgetUpdateRequest request);
+
     void deleteBudget(Long budgetId);
 }

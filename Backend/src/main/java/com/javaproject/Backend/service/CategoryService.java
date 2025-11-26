@@ -9,9 +9,13 @@ import com.javaproject.Backend.dto.response.CategoryResponse;
 public interface CategoryService {
     // ==== Tạo category mới =====
     CategoryResponse createCategory(CategoryRequest request);
+
     // ==== Truy xuất danh sách Category theo userId =====
     List<CategoryResponse> getCategoriesByUser(Long userId);
+
     List<CategoryResponse> getMyCategories();
+
     CategoryResponse updateCategory(Long categoryId, CategoryUpdateRequest request);
+
     void deleteCategory(Long categoryId);
 }

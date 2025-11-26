@@ -42,7 +42,7 @@ public class ReportServiceImpl implements ReportService {
 
         // Tổng chi tiêu
         BigDecimal total = expenses.stream()
-            // Lấy trường 'amount' (số tiền) từ mỗi đối tượng Expense
+                // Lấy trường 'amount' (số tiền) từ mỗi đối tượng Expense
                 .map(com.javaproject.Backend.domain.Expense::getAmount)
                 // Cộng tổng các số tiền lại, bắt đầu từ 0 (BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -53,6 +53,7 @@ public class ReportServiceImpl implements ReportService {
                 .totalExpense(total) // Tổng chi tiêu
                 .build();
     }
+
     // ==== BÁO CÁO ĐỊNH KỲ HÀNG THÁNG ====
     @Override
     public void scheduledMonthlyReport() {
@@ -62,7 +63,7 @@ public class ReportServiceImpl implements ReportService {
         LocalDate start = now.minusMonths(1) // trừ đi 1 tháng so với ngày được gọi
                 .withDayOfMonth(1);// thiết lập này về ngày int nhập vào ở đây là 1. Trả về đối tượng localdate mới
         // Ngày kết thúc: Ngày cuối cùng của tháng trước
-        LocalDate end = now.minusMonths(1) 
+        LocalDate end = now.minusMonths(1)
                 .withDayOfMonth(now.minusMonths(1).lengthOfMonth()); // trả về số ngày tháng trước
         ReportRequest r = ReportRequest.builder().startDate(start).endDate(end).build();
         ReportResponse resp = generateReport(r);

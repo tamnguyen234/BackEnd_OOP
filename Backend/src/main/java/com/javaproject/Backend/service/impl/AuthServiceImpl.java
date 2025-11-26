@@ -7,7 +7,7 @@ import com.javaproject.Backend.domain.User;
 import com.javaproject.Backend.dto.request.LoginRequest;
 import com.javaproject.Backend.dto.request.RegisterRequest;
 import com.javaproject.Backend.dto.response.JwtResponse;
-import com.javaproject.Backend.dto.response.RegisterResponse;
+import com.javaproject.Backend.dto.response.UserResponse;
 import com.javaproject.Backend.exception.ResourceNotFoundException;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.AuthService;
@@ -24,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
 
     // ==== Đăng kí tài khoản =====
     @Override
-    public RegisterResponse register(RegisterRequest request) {
+    public UserResponse register(RegisterRequest request) {
         // check existed
         userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
             throw new RuntimeException("Email already registered");
@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
                 .fullName(request.getFullName())
                 .build();
         User saved = userRepository.save(user);
-        return RegisterResponse.builder()
+        return UserResponse.builder()
                 // .userId(saved.getUserId())
                 .email(saved.getEmail())
                 .fullName(saved.getFullName())

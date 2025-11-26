@@ -1,19 +1,17 @@
 package com.javaproject.Backend.service.impl;
 
-import com.javaproject.Backend.domain.User;
-import com.javaproject.Backend.dto.response.RegisterResponse;
-import com.javaproject.Backend.repository.UserRepository;
-import com.javaproject.Backend.service.UserService;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.javaproject.Backend.domain.User;
+import com.javaproject.Backend.dto.response.UserResponse;
+import com.javaproject.Backend.repository.UserRepository;
+import com.javaproject.Backend.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Service thao tác trực tiếp với User entity
@@ -21,82 +19,49 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    // Sử dụng Jwt lấy user_ID của lient trong token
+    @Override
+    public Long getCurrentUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof Long userId) {
+            return userId;
+        }
+        throw new AccessDeniedException("User ID not found or not authenticated.");
+    }
 
     private final UserRepository userRepository;
-    // ==== Lấy thông tin một user theo userId ====
+
+    // ==== Lấy thông tin một user = userId ====
     @Override
-    public RegisterResponse getUserById(Long userId) {
+    public UserResponse getUserById(Long userId) {
         // Tìm user theo ID, nếu không tồn tại thì ném exception
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        RegisterResponse response = new RegisterResponse();
+        UserResponse response = new UserResponse();
         response.setEmail(user.getEmail());
         response.setFullName(user.getFullName());
         return response;
     }
-    // ==== Lấy danh sách tất cả user ====
-    public List<RegisterResponse> getAllUsers() {
-        return userRepository.findAll()
-                // Stream là một cách để xử lý tập hợp dữ liệu tuần tự hoặc song song mà không cần dùng vòng lặp for
-                // gọi để tạo dữ liệu từ list -> thao tác lọc, biến đổi, sắp xếp
-                .stream()
-                // map hàm biến đổi, nhận từ stream chuyển thành RegisterResponse
-                .map(user -> {
-                    RegisterResponse dto = new RegisterResponse();
-                    // dto.setUserId(user.getUserId());
-                    dto.setEmail(user.getEmail());
-                    dto.setFullName(user.getFullName());
-                    return dto;
-                })
-                // từ stream biến ngược về list bằng hàm collect trong collections
-                .collect(Collectors.toList());
-    }
 
+    // xoá người dùng:
     @Override
-    public RegisterResponse updateUser(Long userId, RegisterResponse request) {
+    public UserResponse deleteUser(Long userId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
     }
+
+    // Cập nhập thông tin người dùng:
+    @Override
+    public UserResponse updateUser(Long userId, UserResponse request) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+    }
+
+    // Tìm user = email
     @Override
     public Optional<User> findByEmail(String userEmail) {
         return userRepository.findByEmail(userEmail);
     }
 
-    // ✅ TRIỂN KHAI PHƯƠNG THỨC GỘP LOGIC
-    @Override
-    public Long getCurrentUserId(){
-        // // 1. Lấy email từ Security Context
-        // String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        
-        // // 2. Tìm User Entity từ email
-        // User user = findByEmail(userEmail)
-        //               .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
-        
-        // // 3. Trả về userId
-        // return user.getUserId();
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof Long userId) {
-        // Tối ưu hóa: Trả về ID trực tiếp từ Security Context
-        return userId;
-    }
-    
-    // Nếu vẫn là String (email) hoặc không xác định (dành cho các trường hợp đặc biệt)
-    throw new AccessDeniedException("User ID not found or not authenticated.");
-    }
 }
-
-// ví dụ getallusers
-// List<User>: [User1, User2, User3]
-// |
-// stream
-// User1 → User2 → User3
-// |
-// map() từng dòng dữ liệu
-// User1 → RegisterResponse1
-// User2 → RegisterResponse2
-// User3 → RegisterResponse3
-// |
-// list
-// [RegisterResponse1, RegisterResponse2, RegisterResponse3]
