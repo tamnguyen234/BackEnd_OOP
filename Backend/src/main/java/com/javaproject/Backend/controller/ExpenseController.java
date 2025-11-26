@@ -37,14 +37,6 @@ public class ExpenseController {
         return ResponseEntity.ok(expenseService.createExpense(req));
     }
 
-    // ===== Endpoint lấy danh sách Expense theo user =====
-    // GET
-    // @GetMapping("/user/{userId}")
-    // public ResponseEntity<List<ExpenseResponse>> getByUser(@PathVariable Long
-    // userId) {
-    // // @PathVariable: lấy giá trị userId từ URL
-    // return ResponseEntity.ok(expenseService.getExpensesByUser(userId));
-    // }
     // ==== Endpoint truy xuất Expense của người dùng đang đăng nhập (SỬA ĐỔI) ====
     // Endpoint mới: GET /api/expenses (Lấy ID từ Token)
     @GetMapping("/my")
@@ -53,15 +45,6 @@ public class ExpenseController {
     }
 
     // ===== Endpoint lấy danh sách Expense theo user trong khoảng thời gian =====
-    // @GetMapping("/user/{userId}/between")
-    // public ResponseEntity<List<ExpenseResponse>> getByUserBetween(
-    // @PathVariable Long userId,
-    // @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-    // // @DateTimeFormat: chuyển dạng date string sang LocalDate theo ISO
-    // @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
-    // return ResponseEntity.ok(expenseService.getExpensesByUserBetween(userId,
-    // start, end));
-    // }
     // Endpoint mới: GET /api/expenses/between?start=...&end=...
     @GetMapping("/between")
     public ResponseEntity<List<ExpenseResponse>> getMyExpensesBetween(
@@ -71,7 +54,6 @@ public class ExpenseController {
         // Gọi Service mới (không cần truyền userId)
         return ResponseEntity.ok(expenseService.getMyExpensesBetween(start, end));
     }
-
     /** CẬP NHẬT: PUT /api/expenses/{id} **/
     @PutMapping("/update/{id}")
     public ResponseEntity<ExpenseResponse> updateExpense(@PathVariable Long id,
@@ -89,6 +71,3 @@ public class ExpenseController {
         return ResponseEntity.noContent().build();
     }
 }
-// ResponseEntity là một class trong Spring Framework
-// (thuộc package org.springframework.http)
-// dùng để đóng gói HTTP response trả về từ controller.

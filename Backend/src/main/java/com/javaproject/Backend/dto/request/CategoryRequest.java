@@ -13,8 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class CategoryRequest {
-    // @NotNull
-    // private Long userId;
 
     @NotBlank
     private String name;

@@ -8,9 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.javaproject.Backend.domain.Budget;
 
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
-    List<Budget> findByUserUserId(Long userId);
 
-    boolean existsByBudgetIdAndUserUserId(Long budgetId, Long userId);
-
-    Optional<Budget> findByBudgetIdAndUserUserId(Long budgetId, Long userId);
 }

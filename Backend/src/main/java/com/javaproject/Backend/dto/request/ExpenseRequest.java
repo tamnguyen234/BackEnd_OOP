@@ -17,9 +17,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ExpenseRequest {
-    // @NotNull
-    // private Long userId;
-    private Long categoryId;
+    // private Long categoryId;
+
+    @NotNull
+    private String CategoryName;
+    @NotNull
+    private String CategoryType;
 
     @NotNull
     @DecimalMin("0.01")

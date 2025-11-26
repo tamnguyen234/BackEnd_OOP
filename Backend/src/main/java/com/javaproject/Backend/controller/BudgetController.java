@@ -24,41 +24,5 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/budgets")
 @RequiredArgsConstructor
 public class BudgetController {
-    private final BudgetService budgetService;
-
-    // ==== Endpoint tạo ngân sách ====
-    @PostMapping("/create")
-    public ResponseEntity<BudgetResponse> create(@Valid @RequestBody BudgetRequest req) {
-        return ResponseEntity.ok(budgetService.createBudget(req));
-    }
-
-    // // ==== Endpoint truy xuất ngân sách
-    // @GetMapping("/user/{userId}")
-    // public ResponseEntity<List<BudgetResponse>> getByUser(@PathVariable Long
-    // userId) {
-    // return ResponseEntity.ok(budgetService.getBudgetsByUser(userId));
-    // }
-    // ==== Endpoint truy xuất Budget của người dùng đang đăng nhập (SỬA ĐỔI) ====
-    // Endpoint mới: GET /api/budgets (Lấy ID từ Token)
-    @GetMapping("/my")
-    public ResponseEntity<List<BudgetResponse>> getMyBudgets() {
-        return ResponseEntity.ok(budgetService.getMyBudgets());
-    }
-
-    /** CẬP NHẬT: PUT /api/budgets/{id} **/
-    @PutMapping("/update/{id}")
-    public ResponseEntity<BudgetResponse> updateBudget(@PathVariable Long id,
-            @RequestBody BudgetUpdateRequest request) {
-
-        BudgetResponse updatedBudget = budgetService.updateBudget(id, request);
-        return ResponseEntity.ok(updatedBudget);
-    }
-
-    /** XÓA: DELETE /api/budgets/{id} **/
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteBudget(@PathVariable Long id) {
-
-        budgetService.deleteBudget(id);
-        return ResponseEntity.noContent().build();
-    }
+    
 }

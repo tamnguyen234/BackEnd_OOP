@@ -31,10 +31,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
@@ -42,13 +38,10 @@ public class Category {
     private String type; // Thường là 'expense' hoặc 'income'
 
     // Quan hệ OneToMany với Expense (cho phép Expense tham chiếu):
-    // Không cần CascadeType.ALL ở đây, vì Expense có quy tắc SET NULL
     @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
     private Set<Expense> expenses;
 
     // Quan hệ OneToMany với Budget (cho phép Budget tham chiếu): ON DELETE CASCADE
-    // Mặc dù Budget có ON DELETE CASCADE, ta không nên dùng CascadeType.ALL ở đây
-    // vì Category là cha, nếu xóa Category, Budget sẽ bị xóa (theo DB)
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE) // REMOVE mô phỏng CASCADE trên JPA
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE) 
     private Set<Budget> budgets;
 }

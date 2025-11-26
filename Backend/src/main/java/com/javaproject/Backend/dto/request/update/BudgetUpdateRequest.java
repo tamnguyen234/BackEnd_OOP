@@ -2,6 +2,7 @@ package com.javaproject.Backend.dto.request.update;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Locale.Category;
 
 import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
@@ -16,10 +17,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class BudgetUpdateRequest {
-    // @NotNull
-    // private Long userId;
     private Long categoryId;
     @DecimalMin("0.01")
+    private String CategoryName;
+    private String CategoryType;
     private BigDecimal amountLimit;
     private String period;
     private LocalDate startDate;

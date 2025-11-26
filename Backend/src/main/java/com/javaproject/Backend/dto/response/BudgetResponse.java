@@ -16,8 +16,8 @@ import lombok.Setter;
 @Builder
 public class BudgetResponse {
     private Long budgetId;
-    // private Long userId;
-    private Long categoryId;
+    private String CategoryName;
+    private String CategoryType;
     private BigDecimal amountLimit;
     private String period;
     private LocalDate startDate;
