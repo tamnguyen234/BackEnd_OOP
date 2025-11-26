@@ -29,7 +29,7 @@ public class BudgetServiceImpl implements BudgetService {
     private final UserService userService;
 
     // ==== Tạo một ngân sách mới (Budget) ====
-    @Override //Triển khai phương thức từ interface BudgetService
+    @Override // Triển khai phương thức từ interface BudgetService
     public BudgetResponse createBudget(BudgetRequest request) {
         User user = userRepository.findById(userService.getCurrentUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -45,33 +45,36 @@ public class BudgetServiceImpl implements BudgetService {
                 .build();
         // Lưu đối tượng vào database
         Budget saved = budgetRepository.save(b);
-        
+
         return map(saved);
     }
+
     // ==== Truy xuất danh sách Ngân sách theo userId =====
-    @Override //Triển khai phương thức từ interface BudgetService
+    @Override // Triển khai phương thức từ interface BudgetService
     public List<BudgetResponse> getBudgetsByUser(Long userId) {
         return budgetRepository.findByUserUserId(userId).stream()
-                    .map(this::map).collect(Collectors.toList());
+                .map(this::map).collect(Collectors.toList());
     }
-// ==== Logic truy cập dữ liệu cá nhân cho Budget ====
+
+    // ==== Logic truy cập dữ liệu cá nhân cho Budget ====
     @Override
-    public List<BudgetResponse> getMyBudgets() {     
+    public List<BudgetResponse> getMyBudgets() {
         Long currentUserId = userService.getCurrentUserId();
-        
+
         // 3. Gọi phương thức truy vấn
         return getBudgetsByUser(currentUserId);
     }
+
     /** CẬP NHẬT Budget (PUT/PATCH) **/
     public BudgetResponse updateBudget(Long budgetId, BudgetUpdateRequest request) {
-        Long currentUserId = userService.getCurrentUserId(); 
+        Long currentUserId = userService.getCurrentUserId();
 
         // 1. Tìm kiếm và kiểm tra quyền sở hữu
         Budget budget = budgetRepository.findByBudgetIdAndUserUserId(budgetId, currentUserId)
-            .orElseThrow(() -> new ResourceNotFoundException("Budget not found or access denied."));
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Budget not found or access denied."));
+
         // 2. Cập nhật các thuộc tính (Non-Null/Non-Blank Update)
-        
+
         // Amount (Numeric - chỉ cần kiểm tra != null)
         if (request.getAmountLimit() != null) {
             budget.setAmountLimit(request.getAmountLimit());
@@ -86,16 +89,17 @@ public class BudgetServiceImpl implements BudgetService {
         if (request.getEndDate() != null) {
             budget.setEndDate(request.getEndDate());
         }
-        
+
         if (request.getCategoryId() != null) {
-            Category newCategory = categoryRepository.findByCategoryIdAndUserUserId(request.getCategoryId(), currentUserId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found or access denied."));
+            Category newCategory = categoryRepository
+                    .findByCategoryIdAndUserUserId(request.getCategoryId(), currentUserId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found or access denied."));
             budget.setCategory(newCategory);
         }
 
         // 3. Lưu (Update) vào Database
         Budget updatedBudget = budgetRepository.save(budget);
-        
+
         // 4. Ánh xạ (Map) sang Response DTO và trả về
         return map(updatedBudget);
     }
@@ -106,11 +110,12 @@ public class BudgetServiceImpl implements BudgetService {
 
         // 1. Tìm kiếm và kiểm tra quyền sở hữu
         Budget budget = budgetRepository.findByBudgetIdAndUserUserId(budgetId, currentUserId)
-            .orElseThrow(() -> new ResourceNotFoundException("Budget not found or access denied."));
-        
+                .orElseThrow(() -> new ResourceNotFoundException("Budget not found or access denied."));
+
         // 2. Xóa khỏi Database
         budgetRepository.delete(budget);
     }
+
     // hàm map hỗ trợ: chuyển đổi đối tượng budget đã lưu thành BudgetResponse
     private BudgetResponse map(Budget b) {
         return BudgetResponse.builder()

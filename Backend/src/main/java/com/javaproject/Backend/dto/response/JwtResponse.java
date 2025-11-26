@@ -17,4 +17,5 @@ public class JwtResponse {
     // private Long userId;
     private String email;
 }
-// jwt = json web token Là một chuỗi ký tự dùng để xác thực và truyền thông tin giữa client và server.
+// jwt = json web token Là một chuỗi ký tự dùng để xác thực và truyền thông tin
+// giữa client và server.

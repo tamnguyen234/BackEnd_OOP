@@ -8,8 +8,10 @@ public class ResourceNotFoundException extends RuntimeException {
     }
 }
 
-// RuntimeException thường được sử dụng cho các lỗi không thể phục hồi 
-// (như lỗi lập trình hoặc lỗi cấu hình), nhưng trong các ứng dụng web hiện đại (như Spring Boot), 
-// chúng thường được dùng cho các ngoại lệ nghiệp vụ như "không tìm thấy tài nguyên". 
-// Lớp này sẽ được Spring Controller Advice (hoặc Global Exception Handler) bắt 
+// RuntimeException thường được sử dụng cho các lỗi không thể phục hồi
+// (như lỗi lập trình hoặc lỗi cấu hình), nhưng trong các ứng dụng web hiện đại
+// (như Spring Boot),
+// chúng thường được dùng cho các ngoại lệ nghiệp vụ như "không tìm thấy tài
+// nguyên".
+// Lớp này sẽ được Spring Controller Advice (hoặc Global Exception Handler) bắt
 // và chuyển đổi thành một phản hồi HTTP phù hợp, thường là HTTP 404 Not Found.

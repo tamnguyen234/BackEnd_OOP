@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.javaproject.Backend.dto.request.LoginRequest;
 import com.javaproject.Backend.dto.request.RegisterRequest;
 import com.javaproject.Backend.dto.response.JwtResponse;
-import com.javaproject.Backend.dto.response.RegisterResponse;
+import com.javaproject.Backend.dto.response.UserResponse;
 import com.javaproject.Backend.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -25,9 +25,9 @@ public class AuthController {
     @PostMapping("/register")
     // @RequestBody: lấy dữ liệu JSON từ body request
     // @Valid: tự động validate dữ liệu theo annotation trong RegisterRequest
-    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest req) {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest req) {
         return ResponseEntity.ok(authService.register(req));
-        // Gọi service register và trả về ResponseEntity chứa RegisterResponse
+        // Gọi service register và trả về ResponseEntity chứa UserResponse
     }
 
     // ===== Endpoint đăng nhập user =====
