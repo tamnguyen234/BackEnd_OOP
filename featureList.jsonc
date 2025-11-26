@@ -19,7 +19,7 @@
     ],
     //3. Bộ điều khiển: Request và return Reponce cho client và gọi service
     "controller": [
-      "AuthController.java", // Xác Thực: register , login , 
+      "AuthController.java", // Xác Thực: register , login , logout
       "BudgetController.java", // Ngân sách: tạo budget , getAllBudget by UserID , 
       "CategoryController.java", // Loại: tạo category , getAllCategory by userID ,
       "ExpenseController.java", // Chi phí: tạo Expense , getAllExpense by userID , getExpense by userID between(start,end) , 
@@ -73,7 +73,7 @@
     //9. Dịch vụ: Xử lí các logic : Chuyển requet(controller) -> biến DTO và sử dụng biến DTO để thực hiện các logic
     "service": {
       "impl": [
-        "AuthService.java", // register , xác thực login , 
+        "AuthService.java", // register(nhập mk 2 lần), xác thực login , 
         "BudgetService.java",// createBudget , getBudgetsByUser , map (object domain -> DTO) , 
         "CategoryService.java",// createCategory , getCategoriesByUser , map (object domain -> DTO) , 
         "ExpenseService.java",// createExpense , getExpensesByUser , getExpensesByUserBetween ,  map (object domain -> DTO) , 

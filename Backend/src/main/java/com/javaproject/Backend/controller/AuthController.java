@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+
     // ===== Endpoint đăng ký user =====
     @PostMapping("/register")
     // @RequestBody: lấy dữ liệu JSON từ body request
@@ -28,6 +29,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(req));
         // Gọi service register và trả về ResponseEntity chứa RegisterResponse
     }
+
     // ===== Endpoint đăng nhập user =====
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest req) {
@@ -35,4 +37,12 @@ public class AuthController {
         // Gọi service xác thực và trả token JWT
         return ResponseEntity.ok(token);
     }
+
+    // Đăng xuất
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        // Backend không làm gì, chỉ trả OK, FE xoá token và chuyển về trang login
+        return ResponseEntity.ok().build();
+    }
+
 }

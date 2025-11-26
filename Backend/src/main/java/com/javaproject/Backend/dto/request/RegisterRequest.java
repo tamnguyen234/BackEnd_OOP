@@ -18,12 +18,13 @@ import lombok.Setter;
 @Builder
 public class RegisterRequest {
     @Email // Kiểm tra dạng mail hợp lệ hay không
-    @NotBlank //Kiểm tra chuỗi không null và không rỗng, đồng thời không chỉ chứa khoảng trắng.
+    @NotBlank // Kiểm tra chuỗi không null và không rỗng, đồng thời không chỉ chứa khoảng
+              // trắng.
     private String email;
 
     @NotBlank
     @Size(min = 6)
     private String password;
-
+    private String checkpassword;
     private String fullName;
 }

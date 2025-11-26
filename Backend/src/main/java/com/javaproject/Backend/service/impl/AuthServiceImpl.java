@@ -21,6 +21,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+
     // ==== Đăng kí tài khoản =====
     @Override
     public RegisterResponse register(RegisterRequest request) {
@@ -28,6 +29,10 @@ public class AuthServiceImpl implements AuthService {
         userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
             throw new RuntimeException("Email already registered");
         });
+        // Check nhập lại mật khẩu
+        if (!request.getPassword().equals(request.getCheckpassword())) {
+            throw new RuntimeException("Passwords do not match");
+        }
         User user = User.builder()
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
@@ -40,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
                 .fullName(saved.getFullName())
                 .build();
     }
+
     // ===== Đăng nhập =====
     @Override
     public JwtResponse authenticate(LoginRequest request) {
