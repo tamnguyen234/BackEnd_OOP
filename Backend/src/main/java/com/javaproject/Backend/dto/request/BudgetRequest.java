@@ -23,18 +23,10 @@ public class BudgetRequest {
     @NotNull
     private String CategoryName;
     @NotNull
-    private String CategoryType;
-
-    @NotNull
     @DecimalMin("0.01")
     private BigDecimal amountLimit;
 
-    @NotNull
-    private String period;
-
-    @NotNull
     private LocalDate startDate;
 
-    @NotNull
     private LocalDate endDate;
 }

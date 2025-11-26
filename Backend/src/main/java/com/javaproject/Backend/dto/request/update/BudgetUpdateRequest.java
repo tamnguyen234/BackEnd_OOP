@@ -20,9 +20,7 @@ public class BudgetUpdateRequest {
     private Long categoryId;
     @DecimalMin("0.01")
     private String CategoryName;
-    private String CategoryType;
     private BigDecimal amountLimit;
-    private String period;
     private LocalDate startDate;
     private LocalDate endDate;
 }

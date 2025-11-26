@@ -9,4 +9,8 @@ import com.javaproject.Backend.domain.Budget;
 
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
+    List<Budget> findByUserUserId(Long userId);
+    Optional<Budget> findByBudgetIdAndUserUserId(Long budgetId, Long userId);
+
+    boolean existsByBudgetIdAndUserUserId(Long budgetId, Long userId);
 }
