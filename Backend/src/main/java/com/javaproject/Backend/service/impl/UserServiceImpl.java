@@ -78,15 +78,10 @@ public class UserServiceImpl implements UserService {
 
     // ==== Xoá user ====
     @Override
-    public UserResponse deleteUser(Long userId) {
+    public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);
-
-        return UserResponse.builder()
-                .email(user.getEmail())
-                .fullName(user.getFullName())
-                .build();
     }
 
     // ==== Tìm user theo email ====

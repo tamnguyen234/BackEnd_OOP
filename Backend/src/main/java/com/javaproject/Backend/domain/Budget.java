@@ -43,9 +43,6 @@ public class Budget {
     @Column(name = "amount_limit", nullable = false, precision = 12, scale = 2)
     private BigDecimal amountLimit;
 
-    @Column(name = "period", nullable = false, length = 20)
-    private String period;
-
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 

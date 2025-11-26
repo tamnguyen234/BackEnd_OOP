@@ -18,7 +18,7 @@ public interface UserService {
     UserResponse getUserById(Long userId);
 
     // Xoá người dùng:
-    UserResponse deleteUser(Long userId);
+    void deleteUser(Long userId);
 
     // Cập nhập thông tin người dùng:
     UserResponse updateUser(Long userId, UserResponse request);

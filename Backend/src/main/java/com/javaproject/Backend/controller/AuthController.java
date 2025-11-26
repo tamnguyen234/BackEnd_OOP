@@ -1,5 +1,8 @@
 package com.javaproject.Backend.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,11 +71,16 @@ public class AuthController {
     }
 
     // ==== Xoá user hiện tại ====
-    @DeleteMapping("/delete")
-    public ResponseEntity<UserResponse> deleteCurrentUser() {
+   @DeleteMapping("/delete")
+    public ResponseEntity<Map<String, String>> deleteCurrentUser() {
         Long userId = userService.getCurrentUserId();
-        UserResponse deletedUser = userService.deleteUser(userId);
-        return ResponseEntity.ok(deletedUser);
+        userService.deleteUser(userId);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Người dùng đã được xóa thành công");
+        
+        return ResponseEntity.ok(response);
     }
+
 
 }
