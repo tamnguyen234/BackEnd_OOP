@@ -3,6 +3,7 @@ package com.javaproject.Backend.service;
 import java.util.Optional;
 
 import com.javaproject.Backend.domain.User;
+import com.javaproject.Backend.dto.request.update.UserUpdateRequest;
 import com.javaproject.Backend.dto.response.UserResponse;
 
 /**
@@ -24,4 +25,6 @@ public interface UserService {
 
     // Tìm user = email, Optional: trả về rỗng nếu k tìm thấy
     Optional<User> findByEmail(String email);
+
+    UserResponse updateUser(Long userId, UserUpdateRequest request);
 }
