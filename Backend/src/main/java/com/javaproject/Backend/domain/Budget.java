@@ -30,23 +30,25 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long budgetId;
 
+    // Mối quan hệ ManyToOne với User (user_id): ON DELETE CASCADE
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // Mối quan hệ ManyToOne với Category (category_id): ON DELETE CASCADE
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(name = "amount_limit", nullable = false, precision = 12, scale = 2)
     private BigDecimal amountLimit;
 
-    @Column(nullable = false, length = 20)
-    private String period; // MONTHLY, WEEKLY...
+    @Column(name = "period", nullable = false, length = 20)
+    private String period;
 
-    @Column(nullable = false)
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(nullable = false)
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 }

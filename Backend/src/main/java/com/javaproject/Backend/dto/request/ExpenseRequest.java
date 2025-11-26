@@ -17,9 +17,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ExpenseRequest {
-    @NotNull
-    private Long userId;
-
+    // @NotNull
+    // private Long userId;
     private Long categoryId;
 
     @NotNull

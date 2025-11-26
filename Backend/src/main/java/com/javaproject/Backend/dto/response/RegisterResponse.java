@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class RegisterResponse {
-    private Long userId;
+    // private Long userId;
     private String email;
     private String fullName;
 }

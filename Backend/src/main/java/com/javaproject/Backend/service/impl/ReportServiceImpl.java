@@ -47,7 +47,7 @@ public class ReportServiceImpl implements ReportService {
                 // Cộng tổng các số tiền lại, bắt đầu từ 0 (BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return ReportResponse.builder()
-                .userId(request.getUserId())
+                // .userId(request.getUserId())
                 .startDate(start)
                 .endDate(end)
                 .totalExpense(total) // Tổng chi tiêu

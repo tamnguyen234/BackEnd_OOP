@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ReportResponse {
-    private Long userId;
+    // private Long userId;
     private LocalDate startDate;
     private LocalDate endDate;
     private BigDecimal totalExpense;

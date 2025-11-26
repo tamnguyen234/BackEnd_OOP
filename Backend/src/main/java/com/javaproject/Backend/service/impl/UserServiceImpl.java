@@ -5,9 +5,14 @@ import com.javaproject.Backend.dto.response.RegisterResponse;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,7 +31,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         RegisterResponse response = new RegisterResponse();
-        response.setUserId(user.getUserId());
         response.setEmail(user.getEmail());
         response.setFullName(user.getFullName());
         return response;
@@ -40,7 +44,7 @@ public class UserServiceImpl implements UserService {
                 // map hàm biến đổi, nhận từ stream chuyển thành RegisterResponse
                 .map(user -> {
                     RegisterResponse dto = new RegisterResponse();
-                    dto.setUserId(user.getUserId());
+                    // dto.setUserId(user.getUserId());
                     dto.setEmail(user.getEmail());
                     dto.setFullName(user.getFullName());
                     return dto;
@@ -53,6 +57,33 @@ public class UserServiceImpl implements UserService {
     public RegisterResponse updateUser(Long userId, RegisterResponse request) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+    }
+    @Override
+    public Optional<User> findByEmail(String userEmail) {
+        return userRepository.findByEmail(userEmail);
+    }
+
+    // ✅ TRIỂN KHAI PHƯƠNG THỨC GỘP LOGIC
+    @Override
+    public Long getCurrentUserId(){
+        // // 1. Lấy email từ Security Context
+        // String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        
+        // // 2. Tìm User Entity từ email
+        // User user = findByEmail(userEmail)
+        //               .orElseThrow(() -> new UsernameNotFoundException("User not found: " + userEmail));
+        
+        // // 3. Trả về userId
+        // return user.getUserId();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof Long userId) {
+        // Tối ưu hóa: Trả về ID trực tiếp từ Security Context
+        return userId;
+    }
+    
+    // Nếu vẫn là String (email) hoặc không xác định (dành cho các trường hợp đặc biệt)
+    throw new AccessDeniedException("User ID not found or not authenticated.");
     }
 }
 

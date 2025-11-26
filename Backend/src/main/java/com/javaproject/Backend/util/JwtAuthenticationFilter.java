@@ -44,13 +44,13 @@ public void doFilter(jakarta.servlet.ServletRequest servletRequest, jakarta.serv
         if (token != null && jwtUtils.validateJwtToken(token)) {
             
             // 4a. Trích xuất thông tin người dùng từ token
-            String email = jwtUtils.getEmailFromToken(token);
+            // String email = jwtUtils.getEmailFromToken(token);
             Long userId = jwtUtils.getUserIdFromToken(token);
             
             // 4b. Tạo đối tượng Xác thực (Authentication)
             // Đây là đối tượng chuẩn mà Spring Security sử dụng để đại diện cho người dùng đã xác thực.
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    email, // Principal (Chủ thể): Đặt email làm định danh người dùng
+                    userId, // Principal (Chủ thể): Đặt email làm định danh người dùng
                     null, // Credentials: Mật khẩu (đặt là null vì đã xác thực bằng token)
                     Collections.emptyList() // Authorities (Quyền hạn): Đặt là danh sách rỗng (có thể thay bằng roles/permissions thực tế)
             );

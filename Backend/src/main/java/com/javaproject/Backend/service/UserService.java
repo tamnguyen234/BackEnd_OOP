@@ -1,7 +1,9 @@
 package com.javaproject.Backend.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.javaproject.Backend.domain.User;
 import com.javaproject.Backend.dto.response.RegisterResponse;
 
 /**
@@ -34,4 +36,7 @@ public interface UserService {
      * @return Đối tượng RegisterResponse sau khi cập nhật.
      */
     RegisterResponse updateUser(Long userId, RegisterResponse request);
+    Optional<User> findByEmail(String email);
+    Long getCurrentUserId();
+
 }

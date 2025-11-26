@@ -1,4 +1,4 @@
-package com.javaproject.Backend.dto.response;
+package com.javaproject.Backend.dto.request.update;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryResponse {
-    private Long categoryId;
-    // private Long userId;
+public class CategoryUpdateRequest {
     private String name;
-    private String type;
+
+    private String type; // optional
 }

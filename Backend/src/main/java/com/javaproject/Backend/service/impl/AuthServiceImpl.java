@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         User saved = userRepository.save(user);
         return RegisterResponse.builder()
-                .userId(saved.getUserId())
+                // .userId(saved.getUserId())
                 .email(saved.getEmail())
                 .fullName(saved.getFullName())
                 .build();
@@ -58,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtils.generateToken(user.getEmail(), user.getUserId());
         return JwtResponse.builder()
                 .token(token)
-                .userId(user.getUserId())
+                // .userId(user.getUserId())
                 .email(user.getEmail())
                 .build();
     }

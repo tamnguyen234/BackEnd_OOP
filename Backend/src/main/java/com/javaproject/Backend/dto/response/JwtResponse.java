@@ -14,7 +14,7 @@ import lombok.Setter;
 public class JwtResponse {
     private String token;
     private String tokenType = "Bearer";
-    private Long userId;
+    // private Long userId;
     private String email;
 }
 // jwt = json web token Là một chuỗi ký tự dùng để xác thực và truyền thông tin giữa client và server.

@@ -19,10 +19,17 @@
     ],
     //3. Bộ điều khiển: Request và return Reponce cho client và gọi service
     "controller": [
+<<<<<<< HEAD
       "AuthController.java", // Xác Thực: register , login , logout
       "BudgetController.java", // Ngân sách: tạo budget , getAllBudget by UserID , 
       "CategoryController.java", // Loại: tạo category , getAllCategory by userID ,
       "ExpenseController.java", // Chi phí: tạo Expense , getAllExpense by userID , getExpense by userID between(start,end) , 
+=======
+      "AuthController.java", // Xác Thực: register , login , 
+      "BudgetController.java", // Ngân sách: tạo budget , getMyBudgets , getAllBudget by UserID (admin) , 
+      "CategoryController.java", // Loại: tạo category , getMyCategories , getAllCategory by userID (admin) ,
+      "ExpenseController.java", // Chi phí: tạo Expense ,getMyExpenses,  getMyExpensesBetween ,admin: getAllExpense by userID , getExpense by userID between(start,end) , 
+>>>>>>> fb5be0e0b7c375d588a1859245400934841d550a
       "ReportController.java" // Báo cáo: 
     ],
     //4. Lãnh địa: Các table entiti (interface của SQL): kết nối và làm việc trực tiếp với SQL (Create Uppdate(Save) Read Delete)
@@ -37,6 +44,7 @@
     "dto": {
       // Dữ liệu nhận vào
       "request": [
+        "update", // BudgetUpdateRequest, ExpenseUpdateRequest, CategoryUpdateRequest 
         "BudgetRequest.java", // Chỉ chứa các thuộc tính đưa vào 
         "CategoryRequest.java", // Chỉ chứa các thuộc tính đưa vào 
         "ExpenseRequest.java", // Chỉ chứa các thuộc tính đưa vào 
@@ -61,9 +69,9 @@
     ],
     //7. Kho lưu trữ: Chứa các truy xuất dữ liệu (Dùng JPA)
     "repository": [
-      "BudgetRepository.java", // getAllBudget by UserID , 
-      "CategoryRepository.java", // getAllCategory by UserID , 
-      "ExpenseRepository.java", // getAllExpence by UserID , getExpense by userID between(start,end) , getExpense between(start,end) ,  
+      "BudgetRepository.java", // getAllBudget by UserID , findByBudgetIdAndUserUserId
+      "CategoryRepository.java", // getAllCategory by UserID , findByCategoryIdAndUserUserId
+      "ExpenseRepository.java", // getAllExpence by UserID , getExpense by userID between(start,end) , getExpense between(start,end) ,   findByExpenseIdAndUserUserId
       "UserRepository.java" // find Requets.email , 
     ],
     //8. Lập lịch: Tự động khởi chạy vào thời gian được thiết lập sẵn
@@ -73,12 +81,19 @@
     //9. Dịch vụ: Xử lí các logic : Chuyển requet(controller) -> biến DTO và sử dụng biến DTO để thực hiện các logic
     "service": {
       "impl": [
+<<<<<<< HEAD
         "AuthService.java", // register(nhập mk 2 lần), xác thực login , 
         "BudgetService.java",// createBudget , getBudgetsByUser , map (object domain -> DTO) , 
         "CategoryService.java",// createCategory , getCategoriesByUser , map (object domain -> DTO) , 
         "ExpenseService.java",// createExpense , getExpensesByUser , getExpensesByUserBetween ,  map (object domain -> DTO) , 
+=======
+        "AuthService.java", // register , xác thực login , 
+        "BudgetService.java",// createBudget , getBudgetsByUser , getMyBudgets , map (object domain -> DTO) , 
+        "CategoryService.java",// createCategory , getCategoriesByUser , getMyCategories,  map (object domain -> DTO) , 
+        "ExpenseService.java",// createExpense , getExpensesByUser , getExpensesByUserBetween , getMyExpenses, getMyExpensesBetween ,  map (object domain -> DTO) , 
+>>>>>>> fb5be0e0b7c375d588a1859245400934841d550a
         "ReportService.java",// Tạo Báo cáo Chi tiêu(Truy vấn Dữ liệu Chi tiêu, Tính toán Tổng chi tiêu, Tạo Phản hồi) , Báo cáo Định kỳ(Tái sử dụng Logic, Xử lý Báo cáo) , 
-        "UserService.java"// getUserById , getAllUsers , updateUser(chưa code) ,  
+        "UserService.java"// getUserById , getAllUsers , updateUser(chưa code) ,  getCurrentUserId, findByEmail
       ]
     },
     //10. Tiện ích: hỗ trợ, độc lập, tái sử dụng
