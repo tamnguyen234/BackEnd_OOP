@@ -4,22 +4,25 @@ import java.util.Optional;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.javaproject.Backend.domain.User;
+import com.javaproject.Backend.dto.request.update.UserUpdateRequest;
 import com.javaproject.Backend.dto.response.UserResponse;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Service thao tác trực tiếp với User entity
- */
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    // Sử dụng Jwt lấy user_ID của lient trong token
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    // ==== Lấy userId hiện tại từ JWT ====
     @Override
     public Long getCurrentUserId() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -29,39 +32,72 @@ public class UserServiceImpl implements UserService {
         throw new AccessDeniedException("User ID not found or not authenticated.");
     }
 
-    private final UserRepository userRepository;
-
-    // ==== Lấy thông tin một user = userId ====
+    // ==== Lấy thông tin user theo ID ====
     @Override
     public UserResponse getUserById(Long userId) {
-        // Tìm user theo ID, nếu không tồn tại thì ném exception
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        UserResponse response = new UserResponse();
-        response.setEmail(user.getEmail());
-        response.setFullName(user.getFullName());
-        return response;
+        return UserResponse.builder()
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .build();
     }
 
-    // xoá người dùng:
+    // ==== Cập nhật thông tin user ====
+    @Override
+    public UserResponse updateUser(Long userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Cập nhật password nếu có
+        if (request.getNewPassword() != null) {
+            if (request.getOldPassword() == null ||
+                    !passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
+                throw new IllegalArgumentException("Old password is incorrect");
+            }
+            if (!request.getNewPassword().equals(request.getCheckPassword())) {
+                throw new IllegalArgumentException("New password and confirmation do not match");
+            }
+            user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        }
+
+        // Cập nhật fullName nếu có
+        if (request.getFullName() != null && !request.getFullName().isBlank()) {
+            user.setFullName(request.getFullName());
+        }
+
+        // Lưu user
+        userRepository.save(user);
+
+        return UserResponse.builder()
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .build();
+    }
+
+    // ==== Xoá user ====
     @Override
     public UserResponse deleteUser(Long userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.delete(user);
+
+        return UserResponse.builder()
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .build();
     }
 
-    // Cập nhập thông tin người dùng:
-    @Override
-    public UserResponse updateUser(Long userId, UserResponse request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
-    }
-
-    // Tìm user = email
+    // ==== Tìm user theo email ====
     @Override
     public Optional<User> findByEmail(String userEmail) {
         return userRepository.findByEmail(userEmail);
     }
 
+    @Override
+    public UserResponse updateUser(Long userId, UserResponse request) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+    }
 }
