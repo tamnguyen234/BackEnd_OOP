@@ -23,25 +23,26 @@ public class MonthlyBudgetScheduler {
     private final BudgetRepository budgetRepository;
     private final UserRepository userRepository;
     private final BudgetService budgetService;
+
     /**
-     * Lập lịch chạy vào 00:00:00 ngày 1 hàng tháng.
+     * Lập lịch chạy vào 00:30:00 ngày 1 hàng tháng.
      */
     @Scheduled(cron = "0 30 0 1 * ?")
     @Transactional
     public void renewMonthlyBudgets() {
         log.info("Bắt đầu quy trình gia hạn ngân sách hàng tháng...");
-        
+
         LocalDate newStartDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
 
-        List<User> users = userRepository.findAll(); 
-        
+        List<User> users = userRepository.findAll();
+
         for (User user : users) {
             log.info("Đang xử lý ngân sách cho User ID: {}", user.getUserId());
 
             // 1. Xóa các ngân sách cũ của tháng trước
             // Phương thức này cần được thêm vào BudgetRepository
-            budgetRepository.deleteExpiredBudgetsByUserId(user.getUserId(), newStartDate); 
-            
+            budgetRepository.deleteExpiredBudgetsByUserId(user.getUserId(), newStartDate);
+
             // 2. GỌI PHƯƠNG THỨC CHUNG ĐÃ ĐƯỢC TỐI ƯU
             budgetService.createMonthlyDefaultBudgets(user.getUserId());
         }

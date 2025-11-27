@@ -52,7 +52,7 @@ public class ExpenseReportScheduler {
             request.setYear(String.valueOf(currentMonth.getYear()));
 
             // Generate report cho user + tháng hiện tại
-            List<ExpenseReportRow> rows = reportService.generateExpenseReport(userId, request);
+            List<ExpenseReportRow> rows = reportService.generateExpenseReportForCurrentUser(userId, request);
 
             // Tạo archive chứa toàn bộ rows
             ExpenseReportArchive archive = new ExpenseReportArchive();

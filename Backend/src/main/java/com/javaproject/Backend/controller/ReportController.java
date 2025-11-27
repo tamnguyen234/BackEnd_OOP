@@ -57,7 +57,7 @@ public class ReportController {
         }
 
         // Nếu hợp lệ, tiếp tục xử lý report
-        return reportService.generateExpenseReportForCurrentUser(request);
+        return reportService.getExpenseReport(request);
     }
 }
 

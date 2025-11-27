@@ -6,15 +6,9 @@ import com.javaproject.Backend.dto.request.ReportRequest;
 import com.javaproject.Backend.dto.response.ReportReponse.ExpenseReportRow;
 
 public interface ReportService {
+    // So sánh tháng và năm để reponce: gen realtime or get data
+    List<ExpenseReportRow> getExpenseReport(ReportRequest request);
+
     // List Report: Sum (chi) compare limit:
-    List<ExpenseReportRow> generateExpenseReportForCurrentUser(ReportRequest request);
-    // // ==== TẠO BÁO CÁO (generateReport) ====
-    // ReportResponse generateReport(ReportRequest request);
-
-    void scheduledMonthlyReport();
-
-    List<ExpenseReportRow> generateExpenseReport(Long userId, ReportRequest request);
-
-    // // ==== BÁO CÁO ĐỊNH KỲ HÀNG THÁNG ====
-    // void scheduledMonthlyReport(); // gọi bởi scheduler
+    List<ExpenseReportRow> generateExpenseReportForCurrentUser(Long userId, ReportRequest request);
 }
