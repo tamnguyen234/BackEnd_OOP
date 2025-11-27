@@ -28,11 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class BudgetController {
     private final BudgetService budgetService;
 
-    // ==== Endpoint tạo ngân sách ====
-    @PostMapping("/create")
-    public ResponseEntity<BudgetResponse> create(@Valid @RequestBody BudgetRequest req) {
-        return ResponseEntity.ok(budgetService.createBudget(req));
-    }
     @GetMapping("/my")
     public ResponseEntity<List<BudgetResponse>> getMyBudgets() {
         return ResponseEntity.ok(budgetService.getMyBudgets());

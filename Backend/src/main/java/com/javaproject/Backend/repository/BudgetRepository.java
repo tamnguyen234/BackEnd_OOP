@@ -1,5 +1,6 @@
 package com.javaproject.Backend.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +14,5 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     Optional<Budget> findByBudgetIdAndUserUserId(Long budgetId, Long userId);
 
     boolean existsByBudgetIdAndUserUserId(Long budgetId, Long userId);
+    void deleteBudgetsByUserIdAndEndDateLessThan(Long userId, LocalDate newStartDate);
 }

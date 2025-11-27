@@ -1,7 +1,9 @@
 package com.javaproject.Backend.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,10 +15,8 @@ import com.javaproject.Backend.domain.User;
 import com.javaproject.Backend.dto.request.BudgetRequest;
 import com.javaproject.Backend.dto.request.update.BudgetUpdateRequest;
 import com.javaproject.Backend.dto.response.BudgetResponse;
-import com.javaproject.Backend.dto.response.ExpenseResponse;
 import com.javaproject.Backend.exception.ResourceNotFoundException;
 import com.javaproject.Backend.repository.BudgetRepository;
-import com.javaproject.Backend.repository.CategoryRepository;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.BudgetService;
 import com.javaproject.Backend.service.CategoryService;
@@ -32,11 +32,38 @@ public class BudgetServiceImpl implements BudgetService {
     private final UserRepository userRepository;
     private final CategoryService categoryService; 
     private final UserService userService;
-    final String DEFAULT_EXPENSE_TYPE = "Chi tiêu";
+    private static final List<String> DEFAULT_EXPENSE_CATEGORIES = Arrays.asList(
+    "Ăn uống", "Di chuyển", "Nhà ở", "Giải trí", 
+    "Sức khỏe", "Học tập", "Tiết kiệm", "Quần áo", "Khác"
+    );
+    private static final String DEFAULT_CATEGORY_TYPE = "Chi tiêu"; 
+    private static final BigDecimal DEFAULT_AMOUNT_LIMIT = BigDecimal.ZERO;
+    
+    
+    @Override
+    @Transactional
+    public void createMonthlyDefaultBudgets(Long userId) {
+        
+        // Tính toán ngày tháng cho tháng hiện tại
+        LocalDate startDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate endDate = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+
+        for (String categoryName : DEFAULT_EXPENSE_CATEGORIES) {
+            // Gọi phương thức tạo cơ bản (đã có)
+            createBudget(BudgetRequest.builder()
+                        .CategoryName(categoryName)
+                        .amountLimit(DEFAULT_AMOUNT_LIMIT)
+                        .startDate(startDate)
+                        .endDate(endDate).build()
+            );
+            
+        }
+    }
+    
     // ==== Tạo một ngân sách mới (Budget) ====
     @Override 
     @Transactional
-    public BudgetResponse createBudget(BudgetRequest request) {
+    public Budget createBudget(BudgetRequest request) {
         
         // 1. Tìm User hiện tại
         User user = userRepository.findById(userService.getCurrentUserId())
@@ -45,23 +72,12 @@ public class BudgetServiceImpl implements BudgetService {
         // 2. Tìm Category (Sử dụng Service)
         Category categoryReference = categoryService.getReferenceByNameAndType(
             request.getCategoryName(),
-            DEFAULT_EXPENSE_TYPE
+            DEFAULT_CATEGORY_TYPE
         );
-        
 
         // 4. Xử lý Ngày (Nếu null, mặc định là đầu/cuối tháng hiện tại)
         LocalDate budgetStartDate = request.getStartDate();
         LocalDate budgetEndDate = request.getEndDate();
-        
-        // Nếu Start Date bị null, mặc định là ngày đầu tháng
-        if (budgetStartDate == null) {
-            budgetStartDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-        }
-
-        // Nếu End Date bị null, mặc định là ngày cuối tháng
-        if (budgetEndDate == null) {
-            budgetEndDate = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
-        }
         
         // **Thêm kiểm tra ngày:** Đảm bảo ngày bắt đầu <= ngày kết thúc
         if (budgetStartDate.isAfter(budgetEndDate)) {
@@ -75,14 +91,12 @@ public class BudgetServiceImpl implements BudgetService {
                 .amountLimit(request.getAmountLimit())
                 .startDate(budgetStartDate)
                 .endDate(budgetEndDate)
-                // Lưu ý: Trường 'period' trong DTO request của bạn không được dùng trong Domain Budget 
-                // nhưng vẫn cần được xử lý nếu nó có vai trò khác. Tôi bỏ qua nó trong quá trình mapping.
                 .build();
         
         // 6. Lưu và trả về
         Budget saved = budgetRepository.save(b);
         
-        return mapToResponse(saved);
+        return saved;
     }
     @Override
     // Không cần @Transactional vì đây là thao tác chỉ đọc (read-only)
@@ -93,8 +107,8 @@ public class BudgetServiceImpl implements BudgetService {
     }
     
     @Override
-@Transactional
-public BudgetResponse updateBudget(Long budgetId, BudgetUpdateRequest request) {
+    @Transactional
+    public BudgetResponse updateBudget(Long budgetId, BudgetUpdateRequest request) {
         Long currentUserId = userService.getCurrentUserId();
 
         // 1. Tìm Budget và kiểm tra quyền sở hữu
@@ -123,7 +137,7 @@ public BudgetResponse updateBudget(Long budgetId, BudgetUpdateRequest request) {
 
         if (newCategoryName != null) {
             // Sử dụng CategoryService để tìm Category mới
-            Category newCategory = categoryService.getReferenceByNameAndType(newCategoryName, DEFAULT_EXPENSE_TYPE);
+            Category newCategory = categoryService.getReferenceByNameAndType(newCategoryName, DEFAULT_CATEGORY_TYPE);
             
             // Kiểm tra logic nghiệp vụ: Budget chỉ cho phép loại "Chi tiêu" (EXPENSE)
             budget.setCategory(newCategory);
