@@ -40,7 +40,7 @@ public class Budget {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(name = "amount_limit", nullable = false, precision = 12, scale = 2)
+    @Column(name = "amount_limit", nullable = false, precision = 12, scale = 3)
     private BigDecimal amountLimit;
 
     @Column(name = "start_date", nullable = false)

@@ -43,7 +43,7 @@ public class Expense {
     @JoinColumn(name = "category_id") // Mặc định là nullable=true nếu không có nullable=false
     private Category category;
 
-    @Column(name = "amount", nullable = false, precision = 12, scale = 2)
+    @Column(name = "amount", nullable = false, precision = 12, scale = 3)
     private BigDecimal amount;
 
     @Column(name = "description", columnDefinition = "TEXT")
