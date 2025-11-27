@@ -13,9 +13,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class BudgetRequest {
     // @NotNull
     // private Long categoryId;

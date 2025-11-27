@@ -1,7 +1,9 @@
 package com.javaproject.Backend.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,25 +32,68 @@ public class BudgetServiceImpl implements BudgetService {
     private final UserRepository userRepository;
     private final CategoryService categoryService;
     private final UserService userService;
+<<<<<<< HEAD
     final String DEFAULT_EXPENSE_TYPE = "Chi tiêu";
 
+=======
+    private static final List<String> DEFAULT_EXPENSE_CATEGORIES = Arrays.asList(
+    "Ăn uống", "Di chuyển", "Nhà ở", "Giải trí", 
+    "Sức khỏe", "Học tập", "Tiết kiệm", "Quần áo", "Khác"
+    );
+    private static final String DEFAULT_CATEGORY_TYPE = "Chi tiêu"; 
+    private static final BigDecimal DEFAULT_AMOUNT_LIMIT = BigDecimal.ZERO;
+    
+    
+    @Override
+    @Transactional
+    public void createMonthlyDefaultBudgets(Long userId) {
+        
+        // Tính toán ngày tháng cho tháng hiện tại
+        LocalDate startDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate endDate = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+
+        for (String categoryName : DEFAULT_EXPENSE_CATEGORIES) {
+            // Gọi phương thức tạo cơ bản (đã có)
+            createBudget(BudgetRequest.builder()
+                        .CategoryName(categoryName)
+                        .amountLimit(DEFAULT_AMOUNT_LIMIT)
+                        .startDate(startDate)
+                        .endDate(endDate).build()
+            );
+            
+        }
+    }
+    
+>>>>>>> ae613e8d003ff4fe12750072201fc94e4907f7a7
     // ==== Tạo một ngân sách mới (Budget) ====
     @Override
     @Transactional
+<<<<<<< HEAD
     public BudgetResponse createBudget(BudgetRequest request) {
 
+=======
+    public Budget createBudget(BudgetRequest request) {
+        
+>>>>>>> ae613e8d003ff4fe12750072201fc94e4907f7a7
         // 1. Tìm User hiện tại
         User user = userRepository.findById(userService.getCurrentUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         // 2. Tìm Category (Sử dụng Service)
         Category categoryReference = categoryService.getReferenceByNameAndType(
+<<<<<<< HEAD
                 request.getCategoryName(),
                 DEFAULT_EXPENSE_TYPE);
+=======
+            request.getCategoryName(),
+            DEFAULT_CATEGORY_TYPE
+        );
+>>>>>>> ae613e8d003ff4fe12750072201fc94e4907f7a7
 
         // 4. Xử lý Ngày (Nếu null, mặc định là đầu/cuối tháng hiện tại)
         LocalDate budgetStartDate = request.getStartDate();
         LocalDate budgetEndDate = request.getEndDate();
+<<<<<<< HEAD
 
         // Nếu Start Date bị null, mặc định là ngày đầu tháng
         if (budgetStartDate == null) {
@@ -60,6 +105,9 @@ public class BudgetServiceImpl implements BudgetService {
             budgetEndDate = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
         }
 
+=======
+        
+>>>>>>> ae613e8d003ff4fe12750072201fc94e4907f7a7
         // **Thêm kiểm tra ngày:** Đảm bảo ngày bắt đầu <= ngày kết thúc
         if (budgetStartDate.isAfter(budgetEndDate)) {
             throw new IllegalArgumentException("Start date cannot be after end date.");
@@ -72,16 +120,24 @@ public class BudgetServiceImpl implements BudgetService {
                 .amountLimit(request.getAmountLimit())
                 .startDate(budgetStartDate)
                 .endDate(budgetEndDate)
+<<<<<<< HEAD
                 // Lưu ý: Trường 'period' trong DTO request của bạn không được dùng trong Domain
                 // Budget
                 // nhưng vẫn cần được xử lý nếu nó có vai trò khác. Tôi bỏ qua nó trong quá
                 // trình mapping.
+=======
+>>>>>>> ae613e8d003ff4fe12750072201fc94e4907f7a7
                 .build();
 
         // 6. Lưu và trả về
         Budget saved = budgetRepository.save(b);
+<<<<<<< HEAD
 
         return mapToResponse(saved);
+=======
+        
+        return saved;
+>>>>>>> ae613e8d003ff4fe12750072201fc94e4907f7a7
     }
 
     @Override
@@ -124,8 +180,13 @@ public class BudgetServiceImpl implements BudgetService {
 
         if (newCategoryName != null) {
             // Sử dụng CategoryService để tìm Category mới
+<<<<<<< HEAD
             Category newCategory = categoryService.getReferenceByNameAndType(newCategoryName, DEFAULT_EXPENSE_TYPE);
 
+=======
+            Category newCategory = categoryService.getReferenceByNameAndType(newCategoryName, DEFAULT_CATEGORY_TYPE);
+            
+>>>>>>> ae613e8d003ff4fe12750072201fc94e4907f7a7
             // Kiểm tra logic nghiệp vụ: Budget chỉ cho phép loại "Chi tiêu" (EXPENSE)
             budget.setCategory(newCategory);
         }
