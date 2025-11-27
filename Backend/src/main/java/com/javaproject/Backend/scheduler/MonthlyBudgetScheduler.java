@@ -40,7 +40,7 @@ public class MonthlyBudgetScheduler {
 
             // 1. Xóa các ngân sách cũ của tháng trước
             // Phương thức này cần được thêm vào BudgetRepository
-            budgetRepository.deleteBudgetsByUserIdAndEndDateLessThan(user.getUserId(), newStartDate); 
+            budgetRepository.deleteBudgetsByUserUserIdAndEndDateLessThan(user.getUserId(), newStartDate); 
             
             // 2. GỌI PHƯƠNG THỨC CHUNG ĐÃ ĐƯỢC TỐI ƯU
             budgetService.createMonthlyDefaultBudgets(user.getUserId());
