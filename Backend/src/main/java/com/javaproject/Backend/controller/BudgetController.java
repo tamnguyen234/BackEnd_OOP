@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.javaproject.Backend.dto.request.BudgetRequest;
 import com.javaproject.Backend.dto.request.update.BudgetUpdateRequest;
-import com.javaproject.Backend.dto.request.update.ExpenseUpdateRequest;
 import com.javaproject.Backend.dto.response.BudgetResponse;
-import com.javaproject.Backend.dto.response.ExpenseResponse;
 import com.javaproject.Backend.service.BudgetService;
 
 import jakarta.validation.Valid;
@@ -33,10 +31,12 @@ public class BudgetController {
     public ResponseEntity<BudgetResponse> create(@Valid @RequestBody BudgetRequest req) {
         return ResponseEntity.ok(budgetService.createBudget(req));
     }
+
     @GetMapping("/my")
     public ResponseEntity<List<BudgetResponse>> getMyBudgets() {
         return ResponseEntity.ok(budgetService.getMyBudgets());
     }
+
     /** CẬP NHẬT: PUT /api/expenses/{id} **/
     @PutMapping("/update/{id}")
     public ResponseEntity<BudgetResponse> updateBudget(@PathVariable Long id,
@@ -45,6 +45,7 @@ public class BudgetController {
         BudgetResponse updatedBudget = budgetService.updateBudget(id, request);
         return ResponseEntity.ok(updatedBudget);
     }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteBudget(@PathVariable Long id) {
 

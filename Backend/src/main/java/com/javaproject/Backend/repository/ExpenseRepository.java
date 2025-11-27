@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.javaproject.Backend.domain.Expense;
 
@@ -18,4 +20,8 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     boolean existsByExpenseIdAndUserUserId(Long expenseId, Long userId);
 
     List<Expense> findByExpenseDateBetween(LocalDate start, LocalDate end);
+
+    @Query("SELECT e.category.name, SUM(e.amount) FROM Expense e WHERE e.user.userId = :userId GROUP BY e.category.name")
+    List<Object[]> getExpenseReportByUser(@Param("userId") Long userId);
+
 }

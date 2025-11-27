@@ -2,7 +2,6 @@ package com.javaproject.Backend.dto.request.update;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Locale.Category;
 
 import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
