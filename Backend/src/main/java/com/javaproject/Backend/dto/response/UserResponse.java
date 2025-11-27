@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class UserResponse {
-    // private Long userId;
     private String email;
     private String fullName;
 }

@@ -51,11 +51,6 @@ public class User {
             createdAt = LocalDateTime.now();
     }
 
-    // // Quan hệ OneToMany với Category: ON DELETE CASCADE
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval =
-    // true)
-    // private Set<Category> categories;
-
     // Quan hệ OneToMany với Expense: ON DELETE CASCADE
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Expense> expenses;

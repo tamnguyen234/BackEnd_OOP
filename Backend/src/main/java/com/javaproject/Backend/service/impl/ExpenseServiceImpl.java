@@ -14,7 +14,6 @@ import com.javaproject.Backend.dto.request.ExpenseRequest;
 import com.javaproject.Backend.dto.request.update.ExpenseUpdateRequest;
 import com.javaproject.Backend.dto.response.ExpenseResponse;
 import com.javaproject.Backend.exception.ResourceNotFoundException;
-import com.javaproject.Backend.repository.CategoryRepository;
 import com.javaproject.Backend.repository.ExpenseRepository;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.CategoryService;
@@ -29,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
     private final UserService userService;
     private final CategoryService categoryService; // Sử dụng CategoryService
 
@@ -42,7 +40,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         User user = userRepository.findById(userService.getCurrentUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // 2. **Sử dụng CategoryService để lấy Category Proxy** (Clean code!)
+        // 2. **Sử dụng CategoryService để lấy Category Proxy** 
         Category categoryReference = categoryService.getReferenceByNameAndType(
                 request.getCategoryName(),
                 request.getCategoryType());
@@ -50,7 +48,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         // 3. Tạo đối tượng Expense
         Expense e = Expense.builder()
                 .user(user)
-                .category(categoryReference) // <-- Đúng kiểu dữ liệu: Category
+                .category(categoryReference) 
                 .amount(request.getAmount())
                 .description(request.getDescription())
                 .expenseDate(request.getExpenseDate())
@@ -81,14 +79,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     public List<ExpenseResponse> getMyExpensesBetween(LocalDate start, LocalDate end) {
         Long currentUserId = userService.getCurrentUserId();
 
-        // 3. Gọi phương thức truy vấn cũ (giờ đã an toàn vì userId được xác thực)
+        // 3. Gọi phương thức truy vấn 
         return getExpensesByUserBetween(currentUserId, start, end);
     }
 
-    // Phương thức truy vấn chung (triển khai dựa trên Repository)
+    // Phương thức truy vấn chung 
     @Override
     public List<ExpenseResponse> getExpensesByUserBetween(Long userId, LocalDate start, LocalDate end) {
-        // Phương thức này CẦN được triển khai trong ExpenseRepository
         return expenseRepository.findByUserUserIdAndExpenseDateBetween(userId, start, end)
                 .stream().map(this::mapToResponse).collect(Collectors.toList());
     }
@@ -134,10 +131,9 @@ public class ExpenseServiceImpl implements ExpenseService {
             expense.setCategory(newCategory);
 
         }
-        // Case 3: Type CÓ, Name KHÔNG (Bắt lỗi theo yêu cầu)
+        // Case 3: Type CÓ, Name KHÔNG 
         else if (newType != null && !StringUtils.hasText(newName)) {
-            // Nếu có Type mới nhưng không có Name mới: Trả về lỗi yêu cầu người dùng nhập
-            // Name.
+            // Nếu có Type mới nhưng không có Name mới: Trả về lỗi yêu cầu người dùng nhập Name.
             throw new IllegalArgumentException("Category Name is required when attempting to update Category Type.");
 
         }
@@ -149,7 +145,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         return mapToResponse(updatedExpense);
     }
 
-    /** XÓA Expense **/
+    //==== XÓA Expense ======
     public void deleteExpense(Long expenseId) {
         Long currentUserId = userService.getCurrentUserId();
 

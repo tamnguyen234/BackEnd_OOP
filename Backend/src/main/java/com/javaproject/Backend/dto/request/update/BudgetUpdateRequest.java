@@ -16,7 +16,7 @@ import lombok.Setter;
 @Builder
 public class BudgetUpdateRequest {
     private Long categoryId;
-    @DecimalMin("0.01")
+    @DecimalMin("0.001")
     private String CategoryName;
     private BigDecimal amountLimit;
 }

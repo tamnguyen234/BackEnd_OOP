@@ -17,13 +17,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BudgetRequest {
-    // @NotNull
-    // private Long categoryId;
     
     @NotNull
     private String CategoryName;
     @NotNull
-    @DecimalMin("0.01")
+    @DecimalMin("0.001")
     private BigDecimal amountLimit;
 
     private LocalDate startDate;

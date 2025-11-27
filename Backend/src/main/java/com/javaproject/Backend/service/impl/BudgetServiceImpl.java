@@ -49,7 +49,7 @@ public class BudgetServiceImpl implements BudgetService {
         LocalDate endDate = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
 
         for (String categoryName : DEFAULT_EXPENSE_CATEGORIES) {
-            // Gọi phương thức tạo cơ bản (đã có)
+            // Gọi phương thức tạo cơ bản 
             createBudget(userId ,BudgetRequest.builder()
                         .CategoryName(categoryName)
                         .amountLimit(DEFAULT_AMOUNT_LIMIT)
@@ -92,7 +92,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    // Không cần @Transactional vì đây là thao tác chỉ đọc (read-only)
+    // read-only
     public List<BudgetResponse> getMyBudgets() {
         Long currentUserId = userService.getCurrentUserId();
 
@@ -136,7 +136,6 @@ public class BudgetServiceImpl implements BudgetService {
     public void deleteBudget(Long budgetId) {
         Long currentUserId = userService.getCurrentUserId();
 
-        // Hoặc bạn có thể dùng cách tối ưu hơn (tránh truy vấn SELECT ban đầu):
         if (budgetRepository.existsByBudgetIdAndUserUserId(budgetId, currentUserId)) {
             budgetRepository.deleteById(budgetId);
         } else {

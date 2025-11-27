@@ -19,7 +19,7 @@ public class ExpenseUpdateRequest {
     private Long categoryId;
     private String CategoryName;
     private String CategoryType;
-    @DecimalMin("0.01")
+    @DecimalMin("0.001")
     private BigDecimal amount;
     private String description;
     private LocalDate expenseDate;

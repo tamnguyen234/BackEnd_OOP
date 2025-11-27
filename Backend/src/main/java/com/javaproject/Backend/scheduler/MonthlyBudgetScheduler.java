@@ -26,7 +26,7 @@ public class MonthlyBudgetScheduler {
     /**
      * Lập lịch chạy vào 00:00:00 ngày 1 hàng tháng.
      */
-    @Scheduled(cron = "0 0 0 1 * ?")
+    @Scheduled(cron = "0 30 0 1 * ?")
     @Transactional
     public void renewMonthlyBudgets() {
         log.info("Bắt đầu quy trình gia hạn ngân sách hàng tháng...");

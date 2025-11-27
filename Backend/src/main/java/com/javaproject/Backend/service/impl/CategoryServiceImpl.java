@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
-    // --- Phương thức hỗ trợ cho các Service khác (Đề xuất của bạn) ---
+    // --- Phương thức hỗ trợ cho các Service khác ---
     public Category getReferenceByNameAndType(String name, String type) {
         // 1. Tìm kiếm Category ID
         Long categoryId = categoryRepository
@@ -23,7 +23,6 @@ public class CategoryServiceImpl implements CategoryService{
                 ));
 
         // 2. Trả về đối tượng tham chiếu (Proxy Category)
-        // **Đây là nơi lý tưởng để đặt logic này:** Nó xử lý truy vấn, kiểm tra lỗi, và tối ưu hóa JPA.
         return categoryRepository.getReferenceById(categoryId);
     }
 }
