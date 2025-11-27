@@ -8,23 +8,29 @@ import com.javaproject.Backend.dto.request.LoginRequest;
 import com.javaproject.Backend.dto.request.RegisterRequest;
 import com.javaproject.Backend.dto.response.JwtResponse;
 import com.javaproject.Backend.dto.response.UserResponse;
+import com.javaproject.Backend.events.UserCreatedEvent;
 import com.javaproject.Backend.exception.ResourceNotFoundException;
 import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.AuthService;
 import com.javaproject.Backend.util.JwtUtils;
 
+import org.springframework.context.ApplicationEventPublisher;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-
+    private final ApplicationEventPublisher eventPublisher;
     // ==== Đăng kí tài khoản =====
     @Override
     public UserResponse register(RegisterRequest request) {
+        
         // check existed
         userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
             throw new RuntimeException("Email already registered");
@@ -39,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
                 .fullName(request.getFullName())
                 .build();
         User saved = userRepository.save(user);
+        eventPublisher.publishEvent(new UserCreatedEvent(this, saved.getUserId()));
         return UserResponse.builder()
                 // .userId(saved.getUserId())
                 .email(saved.getEmail())

@@ -8,7 +8,7 @@ import com.javaproject.Backend.dto.request.update.BudgetUpdateRequest;
 import com.javaproject.Backend.dto.response.BudgetResponse;
 
 public interface BudgetService {
-    Budget createBudget(BudgetRequest request);
+    Budget createBudget(Long userId ,BudgetRequest request);
 
     void createMonthlyDefaultBudgets(Long userId);
 

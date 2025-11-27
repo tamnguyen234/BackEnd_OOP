@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.javaproject.Backend.domain.Budget;
+
+import jakarta.transaction.Transactional;
 
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
@@ -14,5 +19,9 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     Optional<Budget> findByBudgetIdAndUserUserId(Long budgetId, Long userId);
 
     boolean existsByBudgetIdAndUserUserId(Long budgetId, Long userId);
-    void deleteBudgetsByUserUserIdAndEndDateLessThan(Long userId, LocalDate newStartDate);
+    // Trong BudgetRepository.java
+    @Modifying
+    @Transactional 
+    @Query("DELETE FROM Budget b WHERE b.user.id = :userId AND b.endDate < :endDate")
+    void deleteExpiredBudgetsByUserId(@Param("userId") Long userId, @Param("endDate") LocalDate endDate);
 }
