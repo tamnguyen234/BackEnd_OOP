@@ -33,8 +33,8 @@ public class BudgetServiceImpl implements BudgetService {
     private final CategoryService categoryService;
     private final UserService userService;
     private static final List<String> DEFAULT_EXPENSE_CATEGORIES = Arrays.asList(
-    "Ăn uống", "Di chuyển", "Nhà ở", "Giải trí", 
-    "Sức khỏe", "Học tập", "Tiết kiệm", "Quần áo", "Khác"
+    "Ăn uống", "Di chuyển", "Tiện ích", "Giải trí", 
+    "Sức khỏe", "Giáo dục", "Tiết kiệm", "Mua sắm", "Khác"
     );
     private static final String DEFAULT_CATEGORY_TYPE = "Chi tiêu"; 
     private static final BigDecimal DEFAULT_AMOUNT_LIMIT = BigDecimal.ZERO;
