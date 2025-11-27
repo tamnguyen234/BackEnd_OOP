@@ -33,8 +33,8 @@ public class BudgetServiceImpl implements BudgetService {
     private final CategoryService categoryService;
     private final UserService userService;
     private static final List<String> DEFAULT_EXPENSE_CATEGORIES = Arrays.asList(
-    "Ăn uống", "Di chuyển", "Tiện ích", "Giải trí", 
-    "Sức khỏe", "Giáo dục", "Tiết kiệm", "Mua sắm", "Khác"
+    "Ăn uống", "Di chuyển", "Giải trí", "Tiện ích", 
+     "Tiết kiệm","Sức khỏe","Mua sắm",  "Giáo dục", "Khác"
     );
     private static final String DEFAULT_CATEGORY_TYPE = "Chi tiêu"; 
     private static final BigDecimal DEFAULT_AMOUNT_LIMIT = BigDecimal.ZERO;
@@ -50,7 +50,7 @@ public class BudgetServiceImpl implements BudgetService {
 
         for (String categoryName : DEFAULT_EXPENSE_CATEGORIES) {
             // Gọi phương thức tạo cơ bản (đã có)
-            createBudget(BudgetRequest.builder()
+            createBudget(userId ,BudgetRequest.builder()
                         .CategoryName(categoryName)
                         .amountLimit(DEFAULT_AMOUNT_LIMIT)
                         .startDate(startDate)
@@ -63,26 +63,18 @@ public class BudgetServiceImpl implements BudgetService {
     // ==== Tạo một ngân sách mới (Budget) ====
     @Override
     @Transactional
-    public Budget createBudget(BudgetRequest request) {
+    public Budget createBudget(Long userId ,BudgetRequest request) {
         
-        // 1. Tìm User hiện tại
-        User user = userRepository.findById(userService.getCurrentUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
+        User user = userRepository.getReferenceById(userId);
         // 2. Tìm Category (Sử dụng Service)
         Category categoryReference = categoryService.getReferenceByNameAndType(
             request.getCategoryName(),
             DEFAULT_CATEGORY_TYPE
         );
 
-        // 4. Xử lý Ngày (Nếu null, mặc định là đầu/cuối tháng hiện tại)
+        // 4. Xử lý Ngày (mặc định là đầu/cuối tháng hiện tại)
         LocalDate budgetStartDate = request.getStartDate();
         LocalDate budgetEndDate = request.getEndDate();
-
-        // **Thêm kiểm tra ngày:** Đảm bảo ngày bắt đầu <= ngày kết thúc
-        if (budgetStartDate.isAfter(budgetEndDate)) {
-            throw new IllegalArgumentException("Start date cannot be after end date.");
-        }
 
         // 5. Tạo đối tượng Budget
         Budget b = Budget.builder()
@@ -122,16 +114,6 @@ public class BudgetServiceImpl implements BudgetService {
         // Amount Limit
         if (request.getAmountLimit() != null) {
             budget.setAmountLimit(request.getAmountLimit());
-        }
-
-        // Start Date
-        if (request.getStartDate() != null) {
-            budget.setStartDate(request.getStartDate());
-        }
-
-        // End Date
-        if (request.getEndDate() != null) {
-            budget.setEndDate(request.getEndDate());
         }
 
         // Category (Cập nhật Category chỉ khi cả Name và Type được cung cấp)

@@ -16,8 +16,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class MonthlyBudgetScheduler {
     private final BudgetRepository budgetRepository;
@@ -40,7 +40,7 @@ public class MonthlyBudgetScheduler {
 
             // 1. Xóa các ngân sách cũ của tháng trước
             // Phương thức này cần được thêm vào BudgetRepository
-            budgetRepository.deleteBudgetsByUserUserIdAndEndDateLessThan(user.getUserId(), newStartDate); 
+            budgetRepository.deleteExpiredBudgetsByUserId(user.getUserId(), newStartDate); 
             
             // 2. GỌI PHƯƠNG THỨC CHUNG ĐÃ ĐƯỢC TỐI ƯU
             budgetService.createMonthlyDefaultBudgets(user.getUserId());
