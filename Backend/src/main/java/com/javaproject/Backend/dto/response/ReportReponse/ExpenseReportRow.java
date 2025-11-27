@@ -2,6 +2,7 @@ package com.javaproject.Backend.dto.response.ReportReponse;
 
 import java.math.BigDecimal;
 
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Embeddable
 public class ExpenseReportRow {
     private String categoryName;
-    private BigDecimal amountSpent; // tổng chi
-    private BigDecimal amountLimit; // giới hạn
-    private BigDecimal difference; // số tiền còn lại so với limit
+    private BigDecimal amountSpent;
+    private BigDecimal amountLimit;
+    private BigDecimal difference;
 }

@@ -1,6 +1,8 @@
 package com.javaproject.Backend.service.impl;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    // Lấy danh sách tất cả userID:
+    @Override
+    public List<Long> getAllUserIds() {
+        return userRepository.findAll().stream().map(User::getUserId).collect(Collectors.toList());
+    }
 
     // ==== Lấy userId hiện tại từ JWT ====
     @Override

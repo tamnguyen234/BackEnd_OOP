@@ -13,6 +13,8 @@ public interface ReportService {
 
     void scheduledMonthlyReport();
 
+    List<ExpenseReportRow> generateExpenseReport(Long userId, ReportRequest request);
+
     // // ==== BÁO CÁO ĐỊNH KỲ HÀNG THÁNG ====
     // void scheduledMonthlyReport(); // gọi bởi scheduler
 }

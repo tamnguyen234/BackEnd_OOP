@@ -1,5 +1,6 @@
 package com.javaproject.Backend.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.javaproject.Backend.domain.User;
@@ -10,6 +11,8 @@ import com.javaproject.Backend.dto.response.UserResponse;
  * Interface định nghĩa các nghiệp vụ liên quan đến User
  */
 public interface UserService {
+    // Lấy danh sách tất cả userID
+    List<Long> getAllUserIds();
 
     // Lấy ID trong token (sử dụngJwt)
     Long getCurrentUserId();
