@@ -8,7 +8,11 @@ import com.javaproject.Backend.repository.CategoryRepository;
 import com.javaproject.Backend.service.CategoryService;
 
 import lombok.RequiredArgsConstructor;
-
+/**
+ * Triển khai (Implementation) của CategoryService, xử lý logic nghiệp vụ cho Danh mục (Category).
+ * * @Service: Đánh dấu class này là Service Component của Spring.
+ * * @RequiredArgsConstructor: Tự động tạo constructor với các trường final (Dependency Injection).
+ */
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService{

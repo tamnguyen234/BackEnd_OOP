@@ -16,6 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Lập lịch tạo budget mới cho mỗi user mỗi đầu tháng
+ */
 @Component
 @Slf4j
 @RequiredArgsConstructor

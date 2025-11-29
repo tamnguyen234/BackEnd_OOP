@@ -8,15 +8,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+/**
+ * Data Transfer Object (DTO) dùng để chứa dữ liệu yêu cầu cập nhất Ngân sách (Budget).
+ * * Chỉ chứa các trường dữ liệu cần thiết để thay đổi.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class BudgetUpdateRequest {
-    // private Long categoryId;
     @DecimalMin("0.001")
-    private String CategoryName;
     private BigDecimal amountLimit;
 }

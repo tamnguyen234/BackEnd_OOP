@@ -8,14 +8,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+/**
+ * Lớp Xử lý Ngoại lệ Toàn cục (Global Exception Handler).
+ * * @RestControllerAdvice: Là một component đặc biệt của Spring, hoạt động như một bộ
+ * điều phối để lắng nghe và xử lý các ngoại lệ (exception) phát sinh từ tất cả
+ * các Controller (@Controller và @RestController) trong ứng dụng.
+ * * Kết hợp chức năng của @ControllerAdvice và @ResponseBody, cho phép phương thức
+ * xử lý trả về dữ liệu JSON trực tiếp cho client.
+ */
 @RestControllerAdvice
-// Là component đặc biệt trong Spring Boot, lắng nghe tất cả controller để xử lý
-// exception.
-// = @ControllerAdvice + @ResponseBody, nên trả về JSON trực tiếp cho client.
 public class GlobalExceptionHandler {
-    // bắt lỗi 404 không tồn tại
-    @ExceptionHandler(ResourceNotFoundException.class) // Định nghĩa loại lỗi sẽ xử lý
+    // Lỗi 404 không tồn tại
+    @ExceptionHandler(ResourceNotFoundException.class) 
     public ResponseEntity<?> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
     }

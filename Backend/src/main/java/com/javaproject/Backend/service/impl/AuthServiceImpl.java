@@ -19,6 +19,11 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Triển khai (Implementation) của AuthService, xử lý logic nghiệp vụ cho Xác thực (Authentication).
+ * * @Service: Đánh dấu class này là Service Component của Spring.
+ * * @RequiredArgsConstructor: Tự động tạo constructor với các trường final (Dependency Injection).
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,7 +32,11 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final ApplicationEventPublisher eventPublisher;
-    // ==== Đăng kí tài khoản =====
+    /**
+     * Xử lý quá trình đăng ký: Kiểm tra tồn tại email, kiểm tra mật khẩu, mã hóa, lưu User.
+     * Cuối cùng, phát sự kiện UserCreatedEvent để kích hoạt các hành động sau đăng ký
+     * (ví dụ: tạo Budget mặc định).
+     */
     @Override
     public UserResponse register(RegisterRequest request) {
         
@@ -53,7 +62,10 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    // ===== Đăng nhập =====
+    /**
+     * Xử lý quá trình xác thực: Tìm User theo email, so sánh mật khẩu đã mã hóa.
+     * Nếu thành công, tạo và trả về JWT Token.
+     */
     @Override
     public JwtResponse authenticate(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())

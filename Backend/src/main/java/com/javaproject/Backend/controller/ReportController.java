@@ -17,12 +17,24 @@ import com.javaproject.Backend.service.ReportService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Controller xử lý các yêu cầu HTTP liên quan đến việc Tạo và Truy xuất Báo cáo (Reports).
+ * * Tất cả các báo cáo đều được tạo dựa trên dữ liệu chi tiêu và quản lý ngân sách của người dùng hiện tại.
+ */
 @RestController
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;
-
+    /**
+     * Tạo báo cáo chi tiêu (Expense Report) theo danh mục cho một tháng cụ thể.
+     * * PATH: /api/reports/expense/current
+     * * Bao gồm logic kiểm tra ràng buộc về thời gian (không quá 3 tháng trước).
+     *
+     * @param request Dữ liệu yêu cầu báo cáo, bao gồm month và year (@Valid kích hoạt validation).
+     * @return Danh sách các hàng báo cáo (ExpenseReportRow), tóm tắt chi tiêu theo danh mục.
+     * @throws ResponseStatusException Nếu month/year không hợp lệ hoặc nằm ngoài phạm vi cho phép.
+     */
     @PostMapping("/expense/current")
     public List<ExpenseReportRow> generateReport(@Valid @RequestBody ReportRequest request) {
         // Validate tháng/năm
@@ -60,10 +72,3 @@ public class ReportController {
         return reportService.getExpenseReport(request);
     }
 }
-
-// // ==== Endpoint tạo report ====
-// @PostMapping("/generate")
-// public ResponseEntity<ReportResponse> generate(@Valid @RequestBody
-// ReportRequest req) {
-// return ResponseEntity.ok(reportService.generateReport(req));
-// }

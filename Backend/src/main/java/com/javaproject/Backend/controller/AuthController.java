@@ -23,46 +23,76 @@ import com.javaproject.Backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Controller xử lý các yêu cầu liên quan đến Xác thực (Authentication) và Quản lý 
+ * hồ sơ người dùng hiện tại.
+ * * Bao gồm các endpoint: Đăng ký, Đăng nhập, Đăng xuất, Lấy/Cập nhật/Xóa thông tin user.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+    // // Inject AuthService để xử lý logic đăng ký/đăng nhập
     private final AuthService authService;
+    // Inject UserService để xử lý logic quản lý thông tin người dùng
     private final UserService userService;
 
-    // ===== Endpoint đăng ký user =====
+    /**
+     * Endpoint xử lú yêu cầu đăng kí người dùng mới
+     * PATH: /api/auth/register
+     * @param req Dữ liệu đăng ký từ client (@Valid tự động kích hoạt validation)
+     * @RequestBody: lấy dữ liệu JSON từ body request
+     * @return ResponseEntity chứa UserResponse của người dùng vừa được tạo.
+     */
     @PostMapping("/register")
-    // @RequestBody: lấy dữ liệu JSON từ body request
-    // @Valid: tự động validate dữ liệu theo annotation trong RegisterRequest
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest req) {
         return ResponseEntity.ok(authService.register(req));
-        // Gọi service register và trả về ResponseEntity chứa UserResponse
     }
 
-    // ===== Endpoint đăng nhập user =====
+    /**
+     * Endpoint xử lý yêu cầu đăng nhập.
+     * PATH: /api/auth/login
+     * @param req Dữ liệu đăng nhập (username/email và password).
+     * @return ResponseEntity chứa JwtResponse, bao gồm JWT Token nếu xác thực thành công.
+     */
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest req) {
         JwtResponse token = authService.authenticate(req);
-        // Gọi service xác thực và trả token JWT
         return ResponseEntity.ok(token);
     }
-
-    // Đăng xuất
+ 
+    /**
+     * Endpoint xử lý yêu cầu đăng xuất.
+     * PATH: /api/auth/logout
+     * * Trong kiến trúc JWT (stateless), backend chỉ trả về 200 OK.
+     * * Trách nhiệm xóa token khỏi client (localStorage/Cookie) thuộc về frontend.
+     * @return ResponseEntity<Void> với trạng thái HTTP 200 OK.
+     */
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
-        // Backend không làm gì, chỉ trả OK, FE xoá token và chuyển về trang login
         return ResponseEntity.ok().build();
     }
 
-    // ==== Lấy thông tin user hiện tại ====
+    /**
+     * Endpoint lấy thông tin chi tiết của người dùng hiện tại.
+     * PATH: /api/auth/in4
+     * * Yêu cầu phải được xác thực (Authorization header hợp lệ).
+     * @return ResponseEntity chứa UserResponse của người dùng đã đăng nhập.
+     */
     @GetMapping("/in4")
     public ResponseEntity<UserResponse> getCurrentUser() {
+        // Lấy ID người dùng từ phiên đăng nhập
         Long userId = userService.getCurrentUserId();
         UserResponse userResponse = userService.getUserById(userId);
         return ResponseEntity.ok(userResponse);
     }
 
-    // ==== Cập nhật thông tin user (fullname / password) ====
+    /**
+     * Endpoint cập nhật thông tin hồ sơ của người dùng hiện tại (fullname, password).
+     * PATH: /api/auth/update
+     * @param request Dữ liệu cập nhật từ client.
+     * @return ResponseEntity chứa UserResponse sau khi đã được cập nhật.
+     */
     @PutMapping("/update")
     public ResponseEntity<UserResponse> updateCurrentUser(@RequestBody UserUpdateRequest request) {
         Long userId = userService.getCurrentUserId();
@@ -70,15 +100,18 @@ public class AuthController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    // ==== Xoá user hiện tại ====
+    /**
+     * Endpoint xóa tài khoản của người dùng hiện tại.
+     * PATH: /api/auth/delete
+     * * Sau khi xóa, người dùng sẽ không thể sử dụng token cũ nữa.
+     * @return ResponseEntity chứa thông báo xác nhận việc xóa thành công.
+     */
    @DeleteMapping("/delete")
     public ResponseEntity<Map<String, String>> deleteCurrentUser() {
         Long userId = userService.getCurrentUserId();
         userService.deleteUser(userId);
-
         Map<String, String> response = new HashMap<>();
         response.put("message", "Người dùng đã được xóa thành công");
-        
         return ResponseEntity.ok(response);
     }
 

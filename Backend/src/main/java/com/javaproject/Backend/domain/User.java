@@ -17,7 +17,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+/**
+ * Đại diện cho thực thể Người dùng (User) trong cơ sở dữ liệu.
+ * * Lưu trữ thông tin cơ bản và các mối quan hệ với Chi tiêu (Expense) và Ngân sách (Budget).
+ * * Tương ứng với bảng "users" trong DB.
+ */
 @Entity
 @Table(name = "users")
 @Getter
@@ -26,36 +30,58 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class User {
-    @Id // đánh dấu primarykey
+    /**
+     * ID duy nhất của Người dùng (Khóa chính).
+     * * Tự động tăng
+     */
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    // Tự động sinh giá trị primary key (ID) cho entity khi lưu vào database.
     private Long userId;
-
+    /**
+     * Địa chỉ email của người dùng
+     * unique = true: Đảm bảo email luôn là duy nhất
+     */
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    /**
+     * Mật khẩu dưới dạng băm
+     */
     @Column(name = "password_hash", nullable = false, length = 100)
     private String passwordHash;
-
+    /**
+     * Họ và tên của người dùng
+     */
     @Column(name = "full_name", length = 100)
     private String fullName;
-
+    /**
+     * Ngày người dùng được tạo
+     */
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @PrePersist
-    // Đánh dấu createdAT sẽ được gán tự động
     public void prePersist() {
         if (createdAt == null)
             createdAt = LocalDateTime.now();
     }
 
-    // Quan hệ OneToMany với Expense: ON DELETE CASCADE
+    /**
+     * Mối quan hệ One-to-Many với Chi tiêu (Expense).
+     * * mappedBy = "user": Trường "user" trong class Expense quản lý Khóa ngoại.
+     * * cascade = CascadeType.ALL: Tất cả các thao tác (persist, merge, remove) sẽ được áp dụng cho Expense liên quan.
+     * * orphanRemoval = true: Nếu một Expense bị gỡ khỏi Set này, nó sẽ bị xóa khỏi DB (tương đương ON DELETE CASCADE).
+     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Expense> expenses;
 
-    // Quan hệ OneToMany với Budget: ON DELETE CASCADE
+    /**
+     * Mối quan hệ One-to-Many với Ngân sách (Budget).
+     * * mappedBy = "user": Trường "user" trong class Budget quản lý Khóa ngoại.
+     * * cascade = CascadeType.ALL: Tất cả các thao tác sẽ được áp dụng cho Budget liên quan.
+     * * orphanRemoval = true: Nếu một Budget bị gỡ khỏi Set này, nó sẽ bị xóa khỏi DB (tương đương ON DELETE CASCADE).
+     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Budget> budgets;
 }

@@ -11,15 +11,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object (DTO) dùng để chứa dữ liệu yêu cầu từ client cho đăng kí người dùng.
+ * * Chỉ chứa các trường dữ liệu cần thiết để thay đổi.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class RegisterRequest {
-    @Email // Kiểm tra dạng mail hợp lệ hay không
-    @NotBlank // Kiểm tra chuỗi không null và không rỗng, đồng thời không chỉ chứa khoảng
-              // trắng.
+    @Email // Kiểm tra đúng định dạng email
+    @NotBlank 
     private String email;
 
     @NotBlank

@@ -9,7 +9,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+/**
+ * Data Transfer Object (DTO) dùng để chứa dữ liệu yêu cầu cập nhật expense.
+ * * Chỉ chứa các trường dữ liệu cần thiết để thay đổi.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

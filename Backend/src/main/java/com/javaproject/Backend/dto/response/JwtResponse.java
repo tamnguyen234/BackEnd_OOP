@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+/**
+ * Data Transfer Object (DTO) dùng để chứa dữ liệu BE cấp cho phiên đăng nhập của người dùng .
+ * * Chỉ chứa các trường dữ liệu cần thiết để thay đổi.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,5 +19,3 @@ public class JwtResponse {
     private String tokenType = "Bearer";
     private String email;
 }
-// jwt = json web token Là một chuỗi ký tự dùng để xác thực và truyền thông tin
-// giữa client và server.

@@ -23,17 +23,25 @@ import com.javaproject.Backend.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Triển khai (Implementation) của ExpenseService, xử lý logic nghiệp vụ cho Quản lý Chi tiêu (Expense).
+ * * @Service: Đánh dấu class này là Service Component của Spring.
+ * * @RequiredArgsConstructor: Tự động tạo constructor với các trường final (Dependency Injection).
+ */
 @Service
 @RequiredArgsConstructor
 public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
     private final UserService userService;
-    private final CategoryService categoryService; // Sử dụng CategoryService
+    private final CategoryService categoryService; 
 
-    // ====== Tạo Khoản Chi Mới =====
+    /**
+     * Tạo một giao dịch Chi tiêu mới cho người dùng hiện tại.
+     * * @Transactional: Đảm bảo thao tác này được thực hiện trong một Transaction.
+     */
     @Override
-    @Transactional // Thêm Transactional
+    @Transactional 
     public ExpenseResponse createExpense(ExpenseRequest request) {
 
         // 1. Tìm User
@@ -58,38 +66,45 @@ public class ExpenseServiceImpl implements ExpenseService {
         return mapToResponse(saved);
     }
 
-    // ==== Logic truy cập dữ liệu cá nhân cho Expense ====
+    /**
+     * Lấy tất cả các giao dịch Chi tiêu của người dùng hiện tại.
+     */
     @Override
     public List<ExpenseResponse> getMyExpenses() {
         Long currentUserId = userService.getCurrentUserId();
-
-        // 3. Gọi phương thức truy vấn
         return getExpensesByUser(currentUserId);
     }
 
-    // ==== Truy Vấn Tất Cả Chi Tiêu của Người Dùng =====
+    /**
+     * Truy xuất tất cả Chi tiêu của một người dùng cụ thể.
+     */
     @Override
     public List<ExpenseResponse> getExpensesByUser(Long userId) {
         return expenseRepository.findByUserUserId(userId).stream().map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    // ==== Logic truy cập dữ liệu cá nhân theo khoảng thời gian ====
+    /**
+     * Lấy các giao dịch chi tiêu của người dùng hiện tại trong một khoảng thời gian.
+     */
     @Override
     public List<ExpenseResponse> getMyExpensesBetween(LocalDate start, LocalDate end) {
         Long currentUserId = userService.getCurrentUserId();
-
-        // 3. Gọi phương thức truy vấn 
         return getExpensesByUserBetween(currentUserId, start, end);
     }
 
-    // Phương thức truy vấn chung 
+    /**
+     * Truy xuất Chi tiêu của một người dùng cụ thể trong một khoảng thời gian.
+     */
     @Override
     public List<ExpenseResponse> getExpensesByUserBetween(Long userId, LocalDate start, LocalDate end) {
         return expenseRepository.findByUserUserIdAndExpenseDateBetween(userId, start, end)
                 .stream().map(this::mapToResponse).collect(Collectors.toList());
     }
-
+    /**
+     * Cập nhật thông tin của một giao dịch Chi tiêu.
+     * * Phải kiểm tra quyền sở hữu (userId) trước khi cho phép cập nhật.
+     */
     @Override
     @Transactional
     public ExpenseResponse updateExpense(Long expenseId, ExpenseUpdateRequest request) {
@@ -104,7 +119,6 @@ public class ExpenseServiceImpl implements ExpenseService {
         if (StringUtils.hasText(request.getDescription())) {
             expense.setDescription(request.getDescription());
         }
-
         // Amount
         if (request.getAmount() != null) {
             expense.setAmount(request.getAmount());
@@ -145,7 +159,9 @@ public class ExpenseServiceImpl implements ExpenseService {
         return mapToResponse(updatedExpense);
     }
 
-    //==== XÓA Expense ======
+    /**
+     * Xóa một giao dịch Chi tiêu dựa trên ID, sau khi kiểm tra quyền sở hữu.
+     */
     public void deleteExpense(Long expenseId) {
         Long currentUserId = userService.getCurrentUserId();
 
@@ -156,7 +172,11 @@ public class ExpenseServiceImpl implements ExpenseService {
         // 2. Xóa khỏi Database
         expenseRepository.delete(expense);
     }
-
+    /**
+     * Chuyển đổi đối tượng Expense Entity sang ExpenseResponse DTO.
+     * @param e Đối tượng Expense Entity.
+     * @return ExpenseResponse DTO.
+     */
     private ExpenseResponse mapToResponse(Expense e) {
         Category category = e.getCategory();
 

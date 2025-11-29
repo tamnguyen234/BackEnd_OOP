@@ -16,7 +16,11 @@ import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
-
+/**
+ * Triển khai (Implementation) của UserService, xử lý logic nghiệp vụ cho Quản lý Người dùng (User Management).
+ * * @Service: Đánh dấu class này là Service Component của Spring.
+ * * @RequiredArgsConstructor: Tự động tạo constructor với các trường final (Dependency Injection).
+ */
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -24,13 +28,20 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Lấy danh sách tất cả userID:
+    /**
+     * Lấy danh sách ID của tất cả người dùng trong hệ thống.
+     */
     @Override
     public List<Long> getAllUserIds() {
         return userRepository.findAll().stream().map(User::getUserId).collect(Collectors.toList());
     }
 
-    // ==== Lấy userId hiện tại từ JWT ====
+    /**
+     * Lấy ID của người dùng hiện tại đang gửi request, trích xuất từ Spring Security Context.
+     * * Phương thức này là cốt lõi cho việc đảm bảo quyền truy cập (Security).
+     * @return ID của người dùng (Long).
+     * @throws AccessDeniedException nếu không tìm thấy ID trong Security Context.
+     */
     @Override
     public Long getCurrentUserId() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -40,7 +51,12 @@ public class UserServiceImpl implements UserService {
         throw new AccessDeniedException("User ID not found or not authenticated.");
     }
 
-    // ==== Lấy thông tin user theo ID ====
+    /**
+     * Truy xuất thông tin người dùng theo ID và chuyển đổi sang DTO an toàn.
+     * @param userId ID của người dùng cần tìm.
+     * @return UserResponse DTO.
+     * @throws RuntimeException nếu User không tồn tại.
+     */
     @Override
     public UserResponse getUserById(Long userId) {
         User user = userRepository.findById(userId)
@@ -52,7 +68,11 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    // ==== Cập nhật thông tin user ====
+    /**
+     * Cập nhật thông tin hồ sơ (fullName) và/hoặc mật khẩu của người dùng.
+     * @throws RuntimeException nếu User không tồn tại.
+     * @throws IllegalArgumentException nếu mật khẩu cũ sai hoặc mật khẩu mới không khớp xác nhận.
+     */
     @Override
     public UserResponse updateUser(Long userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
@@ -84,7 +104,10 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    // ==== Xoá user ====
+    /**
+     * Xóa tài khoản người dùng khỏi hệ thống.
+     * @throws RuntimeException nếu User không tồn tại.
+     */
     @Override
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
@@ -92,15 +115,20 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    // ==== Tìm user theo email ====
+    /**
+     * Tìm kiếm User Entity theo Email.
+     */
     @Override
     public Optional<User> findByEmail(String userEmail) {
         return userRepository.findByEmail(userEmail);
     }
-
+    /**
+     * Phương thức cập nhật bị bỏ qua (Unimplemented/Deprecated).
+     * * Phương thức này có chữ ký tương tự nhưng sử dụng UserResponse làm request DTO,
+     * thường không được khuyến nghị cho thao tác cập nhật (nên dùng DTO riêng biệt như UserUpdateRequest).
+     */
     @Override
     public UserResponse updateUser(Long userId, UserResponse request) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
     }
 }

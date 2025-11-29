@@ -15,89 +15,67 @@ import com.javaproject.Backend.util.JwtUtils;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Cấu hình bảo mật chính (Security Configuration) cho ứng dụng Spring Boot.
+ * * Sử dụng JWT (JSON Web Token) để xác thực người dùng (Stateless Authentication).
+ * * Kích hoạt bảo mật cấp phương thức (@EnableMethodSecurity) để kiểm tra quyền truy cập
+ * ở cấp độ @PreAuthorize và @PostAuthorize.
+ */
 @Configuration
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final JwtUtils jwtUtils;
     // JwtUtils dùng cho filter xác thực token
+    private final JwtUtils jwtUtils;
+    
+    // ===== Cấu hình Bean =====
 
-    // ===== Bean cho PasswordEncoder =====
+    /**
+     * BCryptPasswordEncoder: mã hóa mật khẩu an toàn
+     * @return Đối tượng PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // BCryptPasswordEncoder: mã hóa mật khẩu an toàn
         return new BCryptPasswordEncoder();
-        // dùng passwordEncoder.matches(rawPassword, encodedPassword) để kiểm tra mật
-        // khẩu.
     }
 
-    // ===== Bean cho JWT Filter =====
+    /**
+     * Cung cấp Bean JwtAuthenticationFilter
+     * Filter kiểm tra JWT token gửi từ client
+     * @return Đối tượng Filter
+     */
     @Bean
     public Filter jwtAuthenticationFilter() {
-        // Tạo filter dùng để kiểm tra JWT token gửi từ client trong header
-        // Authorization
         return new com.javaproject.Backend.util.JwtAuthenticationFilter(jwtUtils);
-        // hợp lệ trả filter đến JwtAuthenticationFilter (trong util)
     }
 
-    // ===== Cấu hình bảo mật tổng thể cho HTTP requests =====
+    // ===== Cấu hình HTTP Security =====
+
+    /**
+     * Định nghĩa chuỗi bộ lọc bảo mật (SecurityFilterChain) cho các HTTP requests.
+     * * Cấu hình các quy tắc bảo mật, quản lý session, và thứ tự các bộ lọc.
+     * @param http Đối tượng HttpSecurity để tùy chỉnh cấu hình bảo mật.
+     * @return SecurityFilterChain đã được xây dựng.
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                // Tắt CSRF, vì API thường dùng token (không dùng form) - dễ hiểu là tắt cảnh
-                // báo không liên quan
+                // Tắt CSRF, vì API dùng token để duy trì đăng nhập 
                 .authorizeHttpRequests(auth -> auth
+                    // permitall - Cho phép truy cập cho các đường dẫn
+                        // * /api/auth/**: Các endpoint liên quan đến Đăng ký/Đăng nhập (authentication).
+                        // * /h2-console/**: H2 Database console .
                         .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
-                        // permitall - cho phép tất cả
-                        // Các đường dẫn đăng ký, login và H2 console được phép truy cập mà không cần
-                        // auth
-                        .anyRequest().authenticated()) // request khác cần xác thực
+                        // Yêu cầu xác thực với request khác
+                        .anyRequest().authenticated()) 
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        // Sau mỗi lần kiểm tra jwt token xong và trả kết quả thì không nhớ nó nữa
-
-        // Thêm filter JWT trước filter mặc định UsernamePasswordAuthenticationFilter
+        // Đảm báo kiểm tra token
         http.addFilterBefore(jwtAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class);
 
-        // Cho phép truy cập H2 console nếu đang dùng, tắt frame options
+        // Cấu hình H2 console: để H2 console hoạt động khi được nhúng trong iframe
         http.headers(headers -> headers.frameOptions().disable());
         return http.build();
-        // Build SecurityFilterChain và trả về cho Spring Security sử dụng
     }
 }
-// CLIENT (browser/app)
-// |
-// | POST /api/auth/login {email, password}
-// v
-// CONTROLLER (AuthController)
-// |
-// | gọi AuthService.authenticate()
-// v
-// SERVICE (AuthServiceImpl)
-// |
-// | 1. Lấy user từ DB
-// | 2. So sánh password raw + hashed
-// | 3. Tạo JWT token (jwtUtils.generateToken)
-// v
-// RESPONSE
-// |
-// | Trả về JSON:
-// | { token: "xxx.yyy.zzz", userId: 1, email: "abc@gmail.com" }
-// v
-// CLIENT
-// |
-// | Lưu token (localStorage hoặc memory)
-// | Mỗi request sau kèm header:
-// | Authorization: Bearer xxx.yyy.zzz
-// v
-// SPRING SECURITY FILTER (jwtAuthenticationFilter)
-// |
-// | Kiểm tra token JWT
-// | Nếu hợp lệ → gắn thông tin user vào SecurityContext
-// v
-// CONTROLLER (requested endpoint)
-// |
-// | Controller biết request thuộc user nào
-// | Xử lý nghiệp vụ
-// v
-// RESPONSE

@@ -6,14 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object (DTO) dùng để chứa dữ liệu yêu cầu cập nhật người dùng.
+ * * Chỉ chứa các trường dữ liệu cần thiết để thay đổi.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UserUpdateRequest {
-    private String oldPassword; // đổi password, password cũ bắt buộc phải điền
-    private String newPassword; // có thể null nếu chỉ đổi fullname
-    private String checkPassword; // dùng để xác nhận newPassword
-    private String fullName; // có thể null nếu chỉ đổi password
+    private String oldPassword; 
+    private String newPassword; 
+    private String checkPassword; 
+    private String fullName; 
 }

@@ -13,7 +13,9 @@ import com.javaproject.Backend.dto.response.ReportReponse.ExpenseReportRow;
 import com.javaproject.Backend.repository.ExpenseReportArchiveRepository;
 import com.javaproject.Backend.service.ReportService;
 import com.javaproject.Backend.service.UserService;
-
+/**
+ * Lập lịch báo cáo hàng tháng
+ */
 @Component
 public class ExpenseReportScheduler {
 

@@ -26,16 +26,28 @@ import com.javaproject.Backend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
-// Đánh dấu lớp này là Service và sử dụng Dependency Injection thông qua RequiredArgsConstructor
+/**
+ * Triển khai (Implementation) của ReportService, xử lý logic nghiệp vụ cho việc tạo
+ * Báo cáo Chi tiêu (Expense Report).
+ * * @Service: Đánh dấu class này là Service Component của Spring.
+ * * @RequiredArgsConstructor: Tự động tạo constructor với các trường final (Dependency Injection).
+ */
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
         private final ExpenseReportArchiveRepository archiveRepository;
         private final ExpenseRepository expenseRepository;
         private final BudgetRepository budgetRepository;
-        private final UserService userService; // getCurrentUserId()
-        // So sánh tháng và năm để reponce: gen realtime or get data
-
+        private final UserService userService; 
+        /**
+         * Phương thức chính để lấy Báo cáo Chi tiêu.
+         * * Logic: So sánh tháng được yêu cầu với tháng hiện tại.
+         *   - Nếu là tháng hiện tại: Báo cáo được tạo theo thời gian thực (real-time).
+         *   - Nếu là tháng đã qua: Truy xuất báo cáo từ kho lưu trữ (archive).
+         * * @param request Yêu cầu báo cáo, chứa tháng và năm cần xem.
+         * @return Danh sách các hàng báo cáo (ExpenseReportRow).
+         * @throws RuntimeException Nếu báo cáo đã qua nhưng không tìm thấy trong archive.
+         */
         public List<ExpenseReportRow> getExpenseReport(ReportRequest request) {
                 Long userId = userService.getCurrentUserId();
                 int month = Integer.parseInt(request.getMonth());
@@ -55,7 +67,14 @@ public class ReportServiceImpl implements ReportService {
                 }
         }
 
-        // List Report: Sum (chi) compare limit:
+        /**
+         * Tạo Báo cáo Chi tiêu cho người dùng hiện tại trong một tháng/năm cụ thể.
+         * * Báo cáo này tổng hợp Chi tiêu (Expense), so sánh với Ngân sách (Budget Limit),
+         * và tính toán sự chênh lệch (Difference).
+         * * @param userId ID của người dùng cần tạo báo cáo.
+         * @param request Yêu cầu báo cáo, chứa tháng và năm.
+         * @return Danh sách các hàng báo cáo (ExpenseReportRow) đã được tổng hợp.
+         */
         @Override
         public List<ExpenseReportRow> generateExpenseReportForCurrentUser(Long userId, ReportRequest request) {
                 // Xử lí tháng người dùng nhập -> startDate và endDate:
@@ -78,8 +97,7 @@ public class ReportServiceImpl implements ReportService {
                                 .findByUserUserIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(userId, startDate,
                                                 endDate);
 
-                // 3. Map budget theo categoryId (lấy limit đầu tiên nếu trùng) (do mình default
-                // bugdet r nên có cũng đc k có cũng đc):
+                // 3. Map budget theo categoryId (lấy limit đầu tiên nếu trùng) :
                 Map<Long, BigDecimal> budgetMap = budgets.stream()
                                 .filter(b -> b.getCategory() != null)
                                 .filter(b -> "Chi tiêu".equalsIgnoreCase(b.getCategory().getType())) // chỉ budget của
@@ -114,11 +132,10 @@ public class ReportServiceImpl implements ReportService {
                                 totalLimit,
                                 totalLimit.subtract(totalSpent)));
 
-                // 5. Gộp tất cả categoryId từ budget và expense (3TH: id có value ở cả 2, id
-                // chỉ có value ở budgetMap, id chỉ có value ở expenseSumMap):
+                // 5. Gộp tất cả categoryId từ budget và expense 
                 Set<Long> allCategoryIds = new HashSet<>();
-                allCategoryIds.addAll(budgetMap.keySet()); // add cateID có limit vào
-                allCategoryIds.addAll(expenseSumMap.keySet()); // add cateID có expen vào
+                allCategoryIds.addAll(budgetMap.keySet()); // 
+                allCategoryIds.addAll(expenseSumMap.keySet()); 
 
                 // 6. Duyệt tất cả category:
                 for (Long catId : allCategoryIds) {

@@ -17,17 +17,33 @@ import com.javaproject.Backend.service.BudgetService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Controller xử lý các yêu cầu HTTP liên quan đến Quản lý Ngân sách (Budget).
+ * * Endpoint  yêu cầu người dùng đã được xác thực (authenticated).
+ */
 @RestController
 @RequestMapping("/api/budgets")
 @RequiredArgsConstructor
 public class BudgetController {
     private final BudgetService budgetService;
+
+    /**
+     * Endpoint lấy ngân sách của người dùng
+     * * PATH: /api/budgets/my
+     * @return ResponseEntity chứa List<BudgetResponse> của các ngân sách.
+     */
     @GetMapping("/my")
     public ResponseEntity<List<BudgetResponse>> getMyBudgets() {
         return ResponseEntity.ok(budgetService.getMyBudgets());
     }
 
-    /** CẬP NHẬT: PUT /api/expenses/{id} **/
+    /**
+     * Endpoint Cập nhật thông tin của một Ngân sách.
+     * * PATH: /api/budgets/update/{id}
+     * @param id ID của Ngân sách cần cập nhật (lấy từ Path Variable).
+     * @param request Dữ liệu cập nhật (lấy từ Request Body).
+     * @return ResponseEntity chứa BudgetResponse đã được cập nhật.
+     */
     @PutMapping("/update/{id}")
     public ResponseEntity<BudgetResponse> updateBudget(@PathVariable Long id,
             @RequestBody BudgetUpdateRequest request) {
@@ -35,7 +51,12 @@ public class BudgetController {
         BudgetResponse updatedBudget = budgetService.updateBudget(id, request);
         return ResponseEntity.ok(updatedBudget);
     }
-
+    /**
+     * Endpoint xóa một Ngân sách.
+     * * PATH: /api/budgets/delete/{id}
+     * @param id ID của Ngân sách cần xóa (lấy từ Path Variable).
+     * @return ResponseEntity với trạng thái HTTP 204 No Content (thành công nhưng không trả về nội dung).
+     */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteBudget(@PathVariable Long id) {
 

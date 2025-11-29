@@ -4,53 +4,29 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// ===== Cấu hình Web =====
-// @Configuration: đánh dấu class này là cấu hình Spring, Spring sẽ tự động load
+/**
+ * Cấu hình toàn bộ cho Spring Web MVC (WebConfig).
+ * * Triển khai WebMvcConfigurer để tùy chỉnh các khía cạnh của cấu hình Web MVC,
+ * chẳng hạn như CORS, định dạng, bộ chuyển đổi, v.v.
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    // ===== Cấu hình CORS (Cross-Origin Resource Sharing) =====
-    // Cross-Origin Resource Sharing (CORS) là cơ chế ngăn chặn request từ các
-    // domain khác nếu không được phép.
+    /**
+     * Cấu hình Cơ chế Chia sẻ Tài nguyên Lẫn miền (CORS - Cross-Origin Resource Sharing).
+     * * Cho phép các ứng dụng khách (client) từ các miền khác có thể truy cập các API .
+     * @param registry Đối tượng CorsRegistry để đăng ký cấu hình CORS.
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 // Áp dụng CORS cho tất cả endpoint của API
                 .allowedOrigins("*")
-                // Cho phép tất cả domain (trong production nên giới hạn domain cụ thể)
+                // Cho phép request từ các miền (*)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 // Cho phép các phương thức HTTP mà client gửi để gọi API
                 .allowedHeaders("*");
-        // Cho phép tất cả header từ client
+                // Cho phép tất cả header từ client
     }
 }
 
-// FRONTEND (https://frontend.com)
-// |
-// ┌───────────────▼───────────────┐
-// │ Browser gửi Request │
-// │ GET /api/expenses (XHR/Fetch)│
-// │ Origin: https://frontend.com │
-// └───────────────┬───────────────┘
-// |
-// ▼
-// BACKEND (Spring Boot API)
-// ┌────────────────────────────────────┐
-// │ WebConfig.addCorsMappings() │
-// │ - check allowedOrigins │
-// │ - check allowedMethods │
-// │ - check allowedHeaders │
-// └────────────────────────────────────┘
-// |
-// ┌──────────────▼──────────────┐
-// │Nếu request hợp lệ → tiếp tục│
-// │ đến Controller │
-// └──────────────┬──────────────┘
-// |
-// ▼
-// CONTROLLER
-// /api/expenses → trả JSON response
-// |
-// ▼
-// BROWSER nhận
-// JSON data từ API

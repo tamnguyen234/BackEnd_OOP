@@ -9,7 +9,10 @@ import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+/**
+ * Data Transfer Object (DTO) dùng để chứa dữ liệu trả về báo cáo từ BE .
+ * * Chỉ chứa các trường dữ liệu cần thiết để thay đổi.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

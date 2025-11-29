@@ -26,6 +26,11 @@ import com.javaproject.Backend.repository.ExpenseRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Triển khai (Implementation) của BudgetService, xử lý logic nghiệp vụ cho Quản lý Ngân sách.
+ * * @Service: Đánh dấu class này là Service Component của Spring.
+ * * @RequiredArgsConstructor: Tự động tạo constructor với các trường final (Dependency Injection).
+ */
 @Service
 @RequiredArgsConstructor
 public class BudgetServiceImpl implements BudgetService {
@@ -40,7 +45,11 @@ public class BudgetServiceImpl implements BudgetService {
             "Tiết kiệm", "Sức khỏe", "Mua sắm", "Giáo dục", "Khác");
     private static final String DEFAULT_CATEGORY_TYPE = "Chi tiêu";
     private static final BigDecimal DEFAULT_AMOUNT_LIMIT = BigDecimal.ZERO;
-
+    /**
+     * Tạo các Ngân sách mặc định cho các danh mục Chi tiêu tiêu chuẩn trong tháng hiện tại
+     * cho một người dùng mới.
+     * * Phương thức này được gọi khi có sự kiện tạo User mới (UserCreatedEvent).
+     */
     @Override
     @Transactional
     public void createMonthlyDefaultBudgets(Long userId) {
@@ -60,7 +69,9 @@ public class BudgetServiceImpl implements BudgetService {
         }
     }
 
-    // ==== Tạo một ngân sách mới (Budget) ====
+    /**
+     * Tạo một Ngân sách mới dựa trên request từ người dùng.
+     */
     @Override
     @Transactional
     public Budget createBudget(Long userId, BudgetRequest request) {
@@ -89,16 +100,22 @@ public class BudgetServiceImpl implements BudgetService {
 
         return saved;
     }
-
+    /**
+     * Lấy tất cả các Ngân sách của người dùng hiện tại.
+     * * Phương thức này không cần @Transactional vì chỉ là thao tác đọc (read-only).
+     */
     @Override
-    // read-only
     public List<BudgetResponse> getMyBudgets() {
         Long currentUserId = userService.getCurrentUserId();
 
         return budgetRepository.findByUserUserId(currentUserId).stream().map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-
+    
+    /**
+     * Cập nhật giới hạn số tiền của một Ngân sách.
+     * * Phải kiểm tra quyền sở hữu (userId) trước khi cho phép cập nhật.
+     */
     @Override
     @Transactional
     public BudgetResponse updateBudget(Long budgetId, BudgetUpdateRequest request) {
@@ -108,28 +125,17 @@ public class BudgetServiceImpl implements BudgetService {
         Budget budget = budgetRepository.findByBudgetIdAndUserUserId(budgetId, currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Budget not found or access denied."));
 
-        // 2. Cập nhật các thuộc tính (Non-Null Update)
-
-        // Amount Limit
+        // 2. Cập nhật các thuộc tính Amount Limit
         if (request.getAmountLimit() != null) {
             budget.setAmountLimit(request.getAmountLimit());
-        }
-
-        // Category (Cập nhật Category chỉ khi cả Name và Type được cung cấp)
-        String newCategoryName = request.getCategoryName();
-
-        if (newCategoryName != null) {
-            // Sử dụng CategoryService để tìm Category mới
-            Category newCategory = categoryService.getReferenceByNameAndType(newCategoryName, DEFAULT_CATEGORY_TYPE);
-
-            // Kiểm tra logic nghiệp vụ: Budget chỉ cho phép loại "Chi tiêu" (EXPENSE)
-            budget.setCategory(newCategory);
         }
         // 3. Lưu và trả về
         Budget updatedBudget = budgetRepository.save(budget);
         return mapToResponse(updatedBudget);
     }
-
+    /**
+     * Xóa một Ngân sách dựa trên ID, sau khi kiểm tra quyền sở hữu.
+     */
     @Override
     @Transactional
     public void deleteBudget(Long budgetId) {
@@ -141,7 +147,13 @@ public class BudgetServiceImpl implements BudgetService {
             throw new ResourceNotFoundException("Budget not found or access denied.");
         }
     }
-
+    /**
+     * Chuyển đổi đối tượng Budget Entity sang BudgetResponse DTO.
+     * * Tính toán tổng chi tiêu hiện tại trong khoảng thời gian của Budget để cung cấp
+     * thông tin trạng thái ngân sách.
+     * @param b Đối tượng Budget Entity.
+     * @return BudgetResponse DTO.
+     */
     private BudgetResponse mapToResponse(Budget b) {
         Category category = b.getCategory();
         Long currentUserId = userService.getCurrentUserId();
