@@ -116,15 +116,17 @@ public class BudgetServiceImpl implements BudgetService {
         }
 
         // Category (Cập nhật Category chỉ khi cả Name và Type được cung cấp)
-        String newCategoryName = request.getCategoryName();
+        // String newCategoryName = request.getCategoryName();
 
-        if (newCategoryName != null) {
-            // Sử dụng CategoryService để tìm Category mới
-            Category newCategory = categoryService.getReferenceByNameAndType(newCategoryName, DEFAULT_CATEGORY_TYPE);
+        // if (newCategoryName != null) {
+        // // Sử dụng CategoryService để tìm Category mới
+        // Category newCategory =
+        // categoryService.getReferenceByNameAndType(newCategoryName,
+        // DEFAULT_CATEGORY_TYPE);
 
-            // Kiểm tra logic nghiệp vụ: Budget chỉ cho phép loại "Chi tiêu" (EXPENSE)
-            budget.setCategory(newCategory);
-        }
+        // // Kiểm tra logic nghiệp vụ: Budget chỉ cho phép loại "Chi tiêu" (EXPENSE)
+        // budget.setCategory(newCategory);
+        // }
         // 3. Lưu và trả về
         Budget updatedBudget = budgetRepository.save(budget);
         return mapToResponse(updatedBudget);
