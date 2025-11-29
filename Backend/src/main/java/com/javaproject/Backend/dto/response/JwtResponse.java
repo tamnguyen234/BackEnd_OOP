@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 /**
- * Data Transfer Object (DTO) dùng để chứa dữ liệu BE cấp cho phiên đăng nhập của người dùng .
+ * Data Transfer Object (DTO) dùng để chứa dữ liệu BE cấp cho phiên đăng nhập
+ * của người dùng .
  * * Chỉ chứa các trường dữ liệu cần thiết để thay đổi.
  */
 @Getter
@@ -16,6 +18,5 @@ import lombok.Setter;
 @Builder
 public class JwtResponse {
     private String token;
-    private String tokenType = "Bearer";
     private String email;
 }

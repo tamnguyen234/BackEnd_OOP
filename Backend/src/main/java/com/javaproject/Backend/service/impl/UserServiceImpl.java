@@ -16,10 +16,13 @@ import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+
 /**
- * Triển khai (Implementation) của UserService, xử lý logic nghiệp vụ cho Quản lý Người dùng (User Management).
+ * Triển khai (Implementation) của UserService, xử lý logic nghiệp vụ cho Quản
+ * lý Người dùng (User Management).
  * * @Service: Đánh dấu class này là Service Component của Spring.
- * * @RequiredArgsConstructor: Tự động tạo constructor với các trường final (Dependency Injection).
+ * * @RequiredArgsConstructor: Tự động tạo constructor với các trường final
+ * (Dependency Injection).
  */
 @Service
 @RequiredArgsConstructor
@@ -37,8 +40,10 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Lấy ID của người dùng hiện tại đang gửi request, trích xuất từ Spring Security Context.
+     * Lấy ID của người dùng hiện tại đang gửi request, trích xuất từ Spring
+     * Security Context.
      * * Phương thức này là cốt lõi cho việc đảm bảo quyền truy cập (Security).
+     * 
      * @return ID của người dùng (Long).
      * @throws AccessDeniedException nếu không tìm thấy ID trong Security Context.
      */
@@ -53,6 +58,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Truy xuất thông tin người dùng theo ID và chuyển đổi sang DTO an toàn.
+     * 
      * @param userId ID của người dùng cần tìm.
      * @return UserResponse DTO.
      * @throws RuntimeException nếu User không tồn tại.
@@ -70,8 +76,10 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Cập nhật thông tin hồ sơ (fullName) và/hoặc mật khẩu của người dùng.
-     * @throws RuntimeException nếu User không tồn tại.
-     * @throws IllegalArgumentException nếu mật khẩu cũ sai hoặc mật khẩu mới không khớp xác nhận.
+     * 
+     * @throws RuntimeException         nếu User không tồn tại.
+     * @throws IllegalArgumentException nếu mật khẩu cũ sai hoặc mật khẩu mới không
+     *                                  khớp xác nhận.
      */
     @Override
     public UserResponse updateUser(Long userId, UserUpdateRequest request) {
@@ -106,6 +114,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Xóa tài khoản người dùng khỏi hệ thống.
+     * 
      * @throws RuntimeException nếu User không tồn tại.
      */
     @Override
@@ -121,14 +130,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByEmail(String userEmail) {
         return userRepository.findByEmail(userEmail);
-    }
-    /**
-     * Phương thức cập nhật bị bỏ qua (Unimplemented/Deprecated).
-     * * Phương thức này có chữ ký tương tự nhưng sử dụng UserResponse làm request DTO,
-     * thường không được khuyến nghị cho thao tác cập nhật (nên dùng DTO riêng biệt như UserUpdateRequest).
-     */
-    @Override
-    public UserResponse updateUser(Long userId, UserResponse request) {
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
     }
 }
