@@ -109,7 +109,7 @@ public class ReportServiceImpl implements ReportService {
 
                 // 5. Dòng tổng (dòng đầu tiên):
                 report.add(new ExpenseReportRow(
-                                "Total",
+                                "Tổng",
                                 totalSpent,
                                 totalLimit,
                                 totalLimit.subtract(totalSpent)));
