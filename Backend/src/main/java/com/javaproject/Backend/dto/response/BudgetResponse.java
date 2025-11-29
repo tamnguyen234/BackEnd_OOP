@@ -22,6 +22,8 @@ public class BudgetResponse {
     private String CategoryName;
     @JsonSerialize(using = BigDecimalTrimZeroSerializer.class)
     private BigDecimal amountLimit;
+    @JsonSerialize(using = BigDecimalTrimZeroSerializer.class)
+    private BigDecimal totalExpense;
     private LocalDate startDate;
     private LocalDate endDate;
 }

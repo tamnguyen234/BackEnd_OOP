@@ -1,5 +1,6 @@
 package com.javaproject.Backend.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +25,15 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     @Query("SELECT e.category.name, SUM(e.amount) FROM Expense e WHERE e.user.userId = :userId GROUP BY e.category.name")
     List<Object[]> getExpenseReportByUser(@Param("userId") Long userId);
 
+    // PHƯƠNG THỨC TÍNH TỔNG
+    @Query("SELECT COALESCE(SUM(e.amount), 0) " +
+            "FROM Expense e " +
+            "WHERE e.user.userId = :userId " +
+            "AND e.category.categoryId = :categoryId " +
+            "AND e.expenseDate BETWEEN :startDate AND :endDate")
+    BigDecimal calculateTotalExpense(
+            @Param("userId") Long userId,
+            @Param("categoryId") Long categoryId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 }

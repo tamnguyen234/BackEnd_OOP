@@ -21,6 +21,7 @@ import com.javaproject.Backend.repository.UserRepository;
 import com.javaproject.Backend.service.BudgetService;
 import com.javaproject.Backend.service.CategoryService;
 import com.javaproject.Backend.service.UserService;
+import com.javaproject.Backend.repository.ExpenseRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,45 +33,43 @@ public class BudgetServiceImpl implements BudgetService {
     private final UserRepository userRepository;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final ExpenseRepository expenseRepository;
+
     private static final List<String> DEFAULT_EXPENSE_CATEGORIES = Arrays.asList(
-    "Ăn uống", "Di chuyển", "Giải trí", "Tiện ích", 
-     "Tiết kiệm","Sức khỏe","Mua sắm",  "Giáo dục", "Khác"
-    );
-    private static final String DEFAULT_CATEGORY_TYPE = "Chi tiêu"; 
+            "Ăn uống", "Di chuyển", "Giải trí", "Tiện ích",
+            "Tiết kiệm", "Sức khỏe", "Mua sắm", "Giáo dục", "Khác");
+    private static final String DEFAULT_CATEGORY_TYPE = "Chi tiêu";
     private static final BigDecimal DEFAULT_AMOUNT_LIMIT = BigDecimal.ZERO;
-    
-    
+
     @Override
     @Transactional
     public void createMonthlyDefaultBudgets(Long userId) {
-        
+
         // Tính toán ngày tháng cho tháng hiện tại
         LocalDate startDate = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
         LocalDate endDate = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
 
         for (String categoryName : DEFAULT_EXPENSE_CATEGORIES) {
-            // Gọi phương thức tạo cơ bản 
-            createBudget(userId ,BudgetRequest.builder()
-                        .CategoryName(categoryName)
-                        .amountLimit(DEFAULT_AMOUNT_LIMIT)
-                        .startDate(startDate)
-                        .endDate(endDate).build()
-            );
-            
+            // Gọi phương thức tạo cơ bản
+            createBudget(userId, BudgetRequest.builder()
+                    .CategoryName(categoryName)
+                    .amountLimit(DEFAULT_AMOUNT_LIMIT)
+                    .startDate(startDate)
+                    .endDate(endDate).build());
+
         }
     }
-    
+
     // ==== Tạo một ngân sách mới (Budget) ====
     @Override
     @Transactional
-    public Budget createBudget(Long userId ,BudgetRequest request) {
-        
+    public Budget createBudget(Long userId, BudgetRequest request) {
+
         User user = userRepository.getReferenceById(userId);
         // 2. Tìm Category (Sử dụng Service)
         Category categoryReference = categoryService.getReferenceByNameAndType(
-            request.getCategoryName(),
-            DEFAULT_CATEGORY_TYPE
-        );
+                request.getCategoryName(),
+                DEFAULT_CATEGORY_TYPE);
 
         // 4. Xử lý Ngày (mặc định là đầu/cuối tháng hiện tại)
         LocalDate budgetStartDate = request.getStartDate();
@@ -87,7 +86,7 @@ public class BudgetServiceImpl implements BudgetService {
 
         // 6. Lưu và trả về
         Budget saved = budgetRepository.save(b);
-        
+
         return saved;
     }
 
@@ -122,7 +121,7 @@ public class BudgetServiceImpl implements BudgetService {
         if (newCategoryName != null) {
             // Sử dụng CategoryService để tìm Category mới
             Category newCategory = categoryService.getReferenceByNameAndType(newCategoryName, DEFAULT_CATEGORY_TYPE);
-            
+
             // Kiểm tra logic nghiệp vụ: Budget chỉ cho phép loại "Chi tiêu" (EXPENSE)
             budget.setCategory(newCategory);
         }
@@ -145,11 +144,16 @@ public class BudgetServiceImpl implements BudgetService {
 
     private BudgetResponse mapToResponse(Budget b) {
         Category category = b.getCategory();
+        Long currentUserId = userService.getCurrentUserId();
+        BigDecimal totalExpense = expenseRepository.calculateTotalExpense(
+                currentUserId, category.getCategoryId(),
+                b.getStartDate(), b.getEndDate());
 
         return BudgetResponse.builder()
                 .budgetId(b.getBudgetId())
                 .CategoryName(category.getName())
                 .amountLimit(b.getAmountLimit())
+                .totalExpense(totalExpense)
                 .startDate(b.getStartDate())
                 .endDate(b.getEndDate())
                 .build();
